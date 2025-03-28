@@ -1,0 +1,83 @@
+I have two trajectories from a FrozenLake environment. Each trajectory consists of a list of observations, actions taken, and received rewards.
+
+Trajectory 1:
+{
+  "observations": [
+    4,
+    8,
+    8,
+    12,
+    0,
+    4,
+    8,
+    12,
+    0,
+    0
+  ],
+  "actions": [
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    3,
+    0
+  ],
+  "rewards": [
+    4,
+    8,
+    8,
+    -5,
+    0,
+    4,
+    8,
+    -5,
+    0,
+    0
+  ]
+}
+
+Trajectory 2:
+{
+  "observations": [
+    0,
+    0,
+    4,
+    8,
+    8,
+    12,
+    0,
+    4,
+    4,
+    8
+  ],
+  "actions": [
+    0,
+    3,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1
+  ],
+  "rewards": [
+    0,
+    0,
+    4,
+    8,
+    8,
+    -5,
+    0,
+    4,
+    4,
+    8
+  ]
+}
+
+Based on the data provided, which trajectory seems to be more successful? Please respond with '1' if Trajectory 1 is better, or '2' if Trajectory 2 is better.
