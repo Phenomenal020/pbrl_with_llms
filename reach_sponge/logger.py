@@ -63,7 +63,6 @@ class PretrainLogger:
     def __init__(self, base_dir="./logs/pretrain/ppo"):
         self.base_dir = base_dir
         os.makedirs(self.base_dir, exist_ok=True)
-        self.reward_logger = self._create_logger("rewards", "rewards.log")
         self.gail_logger    = self._create_logger("gail_train", "gail.log")
 
     def _create_logger(self, name, filename, level=logging.DEBUG, 

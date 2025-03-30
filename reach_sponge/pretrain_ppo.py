@@ -68,13 +68,13 @@ def _main(use_graphics=False, dev=None):
     print("Actions shape:", type(transitions.acts))
     print("Next Observations shape:", transitions.next_obs)
     print("Dones shape:", transitions.dones)
-    pretrain_logger.info("Transitions object created:")
-    pretrain_logger.info("| Metric            | Value               |")
-    pretrain_logger.info("|-------------------|---------------------|")
-    pretrain_logger.info(f"| Observations      | {transitions.obs} |")
-    pretrain_logger.info(f"| Actions          | {transitions.acts} |")
-    pretrain_logger.info(f"| Next Observations| {transitions.next_obs} |")
-    pretrain_logger.info(f"| Dones            | {transitions.dones} |")   
+    pretrain_logger.gail_logger.info("Transitions object created:")
+    pretrain_logger.gail_logger.info("| Metric            | Value               |")
+    pretrain_logger.gail_logger.info("|-------------------|---------------------|")
+    pretrain_logger.gail_logger.info(f"| Observations      | {transitions.obs} |")
+    pretrain_logger.gail_logger.info(f"| Actions          | {transitions.acts} |")
+    pretrain_logger.gail_logger.info(f"| Next Observations| {transitions.next_obs} |")
+    pretrain_logger.gail_logger.info(f"| Dones            | {transitions.dones} |")   
     
     
     def make_env(port):
@@ -132,11 +132,11 @@ def _main(use_graphics=False, dev=None):
     "+/-",
     np.std(learner_rewards_before_training),
     )
-    pretrain_logger.info(f"Rewards before training: {np.mean(learner_rewards_before_training)} +/- {np.std(learner_rewards_before_training)}")
+    pretrain_logger.gail_logger.info(f"Rewards before training: {np.mean(learner_rewards_before_training)} +/- {np.std(learner_rewards_before_training)}")
     
     # Train
     gail_trainer.train(10000)
-    pretrain_logger.info("Training completed.")
+    pretrain_logger.gail_logger.info("Training completed.")
     print("Training completed.")
     
     # After training
@@ -148,18 +148,20 @@ def _main(use_graphics=False, dev=None):
         "+/-",
         np.std(learner_rewards_after_training),
     )
-    pretrain_logger.info(f"Rewards after training: {np.mean(learner_rewards_after_training)} +/- {np.std(learner_rewards_after_training)}")
+    pretrain_logger.gail_logger.info(f"Rewards after training: {np.mean(learner_rewards_after_training)} +/- {np.std(learner_rewards_after_training)}")
     
     # After training, save the PPO model:
     learner.save("models/pretrain/ppo_pretrained_model.zip")
-    pretrain_logger.info("PPO model saved.")
+    pretrain_logger.gail_logger.info("PPO model saved.")
     print("PPO model saved.")
     
     # Close the environment
     venv.close()
-    pretrain_logger.info("Environment closed.")
+    pretrain_logger.gail_logger.info("Environment closed.")
     print("Environment closed.")
 
+    pretrain_logger.gail_logger.info("Pretraining completed.")
+    print("Pretraining completed.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run RCareWorld bathing environment simulation.')
