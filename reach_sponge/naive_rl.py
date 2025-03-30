@@ -30,10 +30,10 @@ from pyrcareworld.envs.bathing_env import BathingEnv
 import pyrcareworld.attributes as attr
 from pyrcareworld.envs.base_env import RCareWorld
 
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.dqn.policies import MlpPolicy
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.ppo import MlpPolicy
 from stable_baselines3.common.monitor import Monitor
-from stable_baselines3 import DQN
+from stable_baselines3 import PPO
 
 def set_global_seed(seed):
     random.seed(seed)
@@ -50,11 +50,16 @@ def set_global_seed(seed):
 
 class ReachSponge(gym.Env):	
     # Initialisation function
-    def __init__(self, use_graphics=False, dev=None):
+    def __init__(self, use_graphics=False, dev=None, port: int = None):
         super(ReachSponge, self).__init__()
-
-        # Initialize the bathing environment in headless mode 
-        self.env = BathingEnv(graphics=use_graphics) if not dev else BathingEnv(graphics=use_graphics, executable_file="@editor")
+        
+        # Initialize the bathing environment
+        # If a port is provided, pass it to BathingEnv.
+        if port is not None:
+            self.env = BathingEnv(graphics=use_graphics, port=port) if not dev else BathingEnv(graphics=use_graphics, executable_file="@editor", port=port)
+        else:
+            self.env = BathingEnv(graphics=use_graphics) if not dev else BathingEnv(graphics=use_graphics, executable_file="@editor")
+        
         set_global_seed(42)
         
         #TODO: Remove this part later since I do not need it in the actual work.
@@ -69,6 +74,7 @@ class ReachSponge(gym.Env):
         self.sponge = self.env.get_sponge()
         self.env.step()
         
+        
         # Initialise an n_steps variable to keep track of number of steps taken per episode. 
         self.n_steps = 0
         # Initialise an n_episodes variable to keep track of the total number of episodes
@@ -77,7 +83,7 @@ class ReachSponge(gym.Env):
         self.n_eps_steps = 0
         
         #  define the action space - Discrete as recommended by the rcareworld authors
-        self.action_space = spaces.Discrete(3)        
+        self.action_space = spaces.Discrete(3, start=0)        
         # define the observation space. The robot's position should be in the goal area. The orientation is important to properly align the gripper
         # Flatten the observation space
         low = np.concatenate([
@@ -170,7 +176,7 @@ class ReachSponge(gym.Env):
         observation = self._get_observation()
         print("++++++++++++++")
         print("resetting")
-        return observation, {} 
+        return observation, {}
     
     
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -280,20 +286,19 @@ class ReachSponge(gym.Env):
         robot_rot = self.robot.data.get("rotation")
         robot_x, robot_z = robot_pos[0], robot_pos[2]
         sponge_x, sponge_z = sponge_pos[0], sponge_pos[2]
+        self.env.step()
         
         # Alternatively;
         dist = np.sqrt((sponge_x - robot_x)**2 + (sponge_z - robot_z)**2)
         reward = -dist  
         
-        is_done = False
-        x_low = -2.5
-        x_high = 2.5
+        x_low = -3.0
+        x_high = 3.0
         z_low = -3.0
         z_high = 3.0
 
-        self.env.step()
-        
         truncated = False
+        is_done = False
         
         # Increase the number of steps taken
         self.n_steps = self.n_steps + 1
@@ -322,9 +327,9 @@ class ReachSponge(gym.Env):
             is_done = True
             
         # Truncate after 100 steps per episode
-        if self.n_steps >= 100:
+        if self.n_eps_steps >= 75:
             truncated = True
-            is_done = True 
+            # is_done = True 
         
         print({
             "n_steps": self.n_steps,
@@ -332,7 +337,8 @@ class ReachSponge(gym.Env):
             "num_episodes_steps": self.n_eps_steps,
             "true reward": reward,
             "done": is_done,
-            "truncated": truncated
+            "truncated": truncated,
+            "n_collisions": len(collision)
         })   
         
         return (reward, is_done, truncated)
@@ -375,14 +381,24 @@ class ReachSponge(gym.Env):
               
                    
 if __name__ == "__main__":
-    # Environment creation function for easy multiprocessing
-    def make_env():
-        env = ReachSponge()  # Create a new instance of the environment
-        env = Monitor(env, filename="naive_reach_sponge_monitor.csv")  # Wrap with Monitor
+    # Initialise the environment
+    # env = ReachSponge()
+    # # Wrap the environment for monitoring and vectorisation
+    # env = Monitor(env, filename="naive_reach_sponge_monitor.csv") 
+    # env = DummyVecEnv([lambda: env])
+    
+    def make_env(port):
+        env = ReachSponge(use_graphics=False, port=port)  
+        env = Monitor(env, filename=f"naive_reach_sponge_monitor_{port}.csv")
         return env
 
-    # Create a SubprocVecEnv with 8 parallel environments
-    env = SubprocVecEnv([lambda: make_env() for _ in range(4)])
+    # Manually specify the ports you want to use for each environment
+    manual_ports = [5005, 5261, 5517, 5750, 5801, 5823, 5837, 5851]
+
+    # Create a list of lambda functions for each environment, each with its assigned port
+    env_fns = [lambda port=port: make_env(port) for port in manual_ports]
+    
+    env = SubprocVecEnv(env_fns)
     
     # dirs for my models
     models_dir = "models/dqn"
@@ -412,14 +428,14 @@ if __name__ == "__main__":
     # If a checkpoint exists, load it. Else, create a new model
     if latest_checkpoint is not None:
         print(f"Resuming training from checkpoint: {latest_checkpoint}")
-        model = DQN.load(latest_checkpoint, env=env, tensorboard_log=logdir)
+        model = PPO.load(latest_checkpoint, env=env, tensorboard_log=logdir)
     else:
-        print("No checkpoint found. Creating a new model.")
-        model = DQN("MlpPolicy", env, verbose=1, tensorboard_log=logdir)
+        print("No checkpoint found. Loading the pretrained model.")
+        model = PPO.load("models/pretrain/ppo_pretrained_model.zip", env, tensorboard_log=logdir)
     
     #  Training parameters
     TOTAL_TIMESTEPS = 50000  
-    SAVE_INTERVAL = 1000
+    SAVE_INTERVAL = 500
     REMAINING_TIMESTEPS = TOTAL_TIMESTEPS - latest_timestep
     
     # Incremental training loop starting from the latest saved timestep
@@ -432,3 +448,7 @@ if __name__ == "__main__":
     
     # Close the environment after training
     env.close()
+    
+    
+
+# Rewards before training: -65.808583 +/- 5.529100999999997
