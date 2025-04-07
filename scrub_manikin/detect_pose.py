@@ -20,20 +20,24 @@ import numpy as np
 
 class DetectPose:
   
-  def __init__(self):
+  def __init__(self, image):
     # Create a PoseLandmarker object.
     base_options = python.BaseOptions(model_asset_path='pose_landmarker.task')
     options = vision.PoseLandmarkerOptions(
         base_options=base_options,
         output_segmentation_masks=False)  # Disable segmentation mask output
+    self.image = image
     self.detector = vision.PoseLandmarker.create_from_options(options)
+    
   
-  def get_landmarks(self, image):
+  def get_landmarks(self):
     # Load the input image from a numpy array.
-    mp_image = Image(image_format=ImageFormat.SRGB, data=image)
+    mp_image = Image(image_format=ImageFormat.SRGB, data=self.image)
     
     # detect poses
     detection_result = self.detector.detect(mp_image)
+    
+    # print(f"Detection result: {detection_result}")
 
     # # Process the detection result. In this case, visualise it.
     # annotated_image = draw_landmarks_on_image(mp_image.numpy_view(), detection_result)
@@ -41,8 +45,12 @@ class DetectPose:
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    # Get landmarks in camera frame (not normalised)
-    world_landmarks = detection_result.pose_world_landmarks[0]
+    # Get landmarks in camera frame - not normalised
+    try:
+      world_landmarks = detection_result.pose_world_landmarks[0]
+    except IndexError:
+      print("No pose landmarks detected")
+      return False, {}
     # world_landmarks = detection_result.pose_landmarks[0]
     
     
@@ -61,7 +69,7 @@ class DetectPose:
     # mid-body
     # mid_body = (right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder)
     
-    return {
+    return True, {
       "right_index": right_index,
       "right_shoulder": right_shoulder,
       "left_shoulder": left_shoulder,

@@ -8,21 +8,13 @@ class GenTrajectory:
             with open('landmarks.json', 'r') as f:
                 self.landmarks = json.load(f)
         except Exception as e:
-            print("Error reading landmarks.json:", e)
-            self.landmarks = {}
+            raise Exception("Error reading landmarks.json:", e)
         
         # Placeholder to correct for depth mismatch. If not None, it will be added to each z coordinate.
         self.depth_error = None
         
     def generate_trajectory(self):
-        # Generate a list of trajectories to cover:
-        # right_arm: [right_shoulder -> right_index -> right_shoulder]
-        # left_arm: [left_shoulder -> left_index -> left_shoulder]
-        # right_leg: [right_hip -> right_foot_index -> right_hip]
-        # left_leg: [left_hip -> left_foot_index -> left_hip]
-        # central_body: [right_shoulder -> left_shoulder -> left_hip -> right_hip -> right_shoulder]
-        
-        trajectories = {}
+        trajectories = []
         
         try:
             # Extract the necessary landmarks
@@ -35,33 +27,26 @@ class GenTrajectory:
             left_hip       = self.landmarks["left_hip"]
             left_foot_index  = self.landmarks["left_foot_index"]
         except KeyError as e:
-            print(f"Missing landmark in the data: {e}")
-            return trajectories
+            raise Exception(f"Missing landmark in the data: {e}")
         
-        # Build each trajectory as a list of waypoints
-        trajectories["right_arm"] = [right_shoulder, right_index, right_shoulder]
-        trajectories["left_arm"] = [left_shoulder, left_index, left_shoulder]
-        trajectories["right_leg"] = [right_hip, right_foot_index, right_hip]
-        trajectories["left_leg"] = [left_hip, left_foot_index, left_hip]
-        trajectories["central_body"] = [right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder]
+        trajectories.append(right_index)
+        trajectories.append(right_shoulder)
+        trajectories.append(right_hip)
+        trajectories.append(right_foot_index)
+        trajectories.append(left_index)
+        trajectories.append(left_shoulder)
+        trajectories.append(left_hip)
+        trajectories.append(left_foot_index)
         
-        # If depth_error correction is provided, adjust the z-axis of each waypoint.
+        # TODO: Place holder for depth error correction
         if self.depth_error is not None:
-            for traj_key, traj in trajectories.items():
-                for i, point in enumerate(traj):
-                    # Assuming the depth (z-axis) is the third coordinate
-                    corrected_point = point.copy()
-                    corrected_point[2] += self.depth_error
-                    traj[i] = corrected_point
-        
-        # The trajectories are formatted for use in an OMPL planner,
-        # where each trajectory is a list of [x, y, z] states.
-        return trajectories
+            return trajectories
 
-# Example usage
-if __name__ == "__main__":
-    traj_generator = GenTrajectory()
-    trajectories = traj_generator.generate_trajectory()
-    print("Generated Trajectories:")
-    for key, traj in trajectories.items():
-        print(f"{key}: {traj}")
+
+# # Example usage
+# if __name__ == "__main__":
+#     traj_generator = GenTrajectory()
+#     trajectories = traj_generator.generate_trajectory()
+#     print("Generated Trajectories:")
+#     for key, traj in trajectories.items():
+#         print(f"{key}: {traj}")

@@ -1,0 +1,265 @@
+2025-03-31 00:45:23 | INFO     | bc_train        | Transitions object created:
+2025-03-31 00:45:23 | INFO     | bc_train        | | Metric            | Value               |
+2025-03-31 00:45:23 | INFO     | bc_train        | |-------------------|---------------------|
+2025-03-31 00:45:23 | INFO     | bc_train        | | Observations      | [[ 1.49126673e+00  8.58683884e-03 -1.50000930e+00  3.59134552e+02
+   2.69926941e+02  2.33813864e-03]
+ [ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ ...
+ [ 1.11091837e-01  9.19488072e-03  1.69441891e+00  3.57851624e+02
+   8.94564285e+01  3.59877869e+02]
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]] |
+2025-03-31 00:45:23 | INFO     | bc_train        | | Actions          | [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+ 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 1 0] |
+2025-03-31 00:45:23 | INFO     | bc_train        | | Next Observations| [[ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ [ 1.51609254e+00  8.71649384e-03 -1.09967995e+00  3.57962860e+02
+   1.38705194e+00  2.57086698e-02]
+ ...
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]
+ [-1.19491622e-01  9.30275768e-03  1.66027224e+00  3.57826508e+02
+   2.67489044e+02  3.59826202e+02]] |
+2025-03-31 00:45:23 | INFO     | bc_train        | | Dones            | [False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False  True False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False  True False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False False False False
+ False False False False  True False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+ False False False False False False False  True False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+  True] |
+2025-03-31 00:54:57 | INFO     | bc_train        | Transitions object created:
+2025-03-31 00:54:57 | INFO     | bc_train        | | Metric            | Value               |
+2025-03-31 00:54:57 | INFO     | bc_train        | |-------------------|---------------------|
+2025-03-31 00:54:57 | INFO     | bc_train        | | Observations      | [[ 1.49126673e+00  8.58683884e-03 -1.50000930e+00  3.59134552e+02
+   2.69926941e+02  2.33813864e-03]
+ [ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ ...
+ [ 1.11091837e-01  9.19488072e-03  1.69441891e+00  3.57851624e+02
+   8.94564285e+01  3.59877869e+02]
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]] |
+2025-03-31 00:54:57 | INFO     | bc_train        | | Actions          | [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+ 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 1 0] |
+2025-03-31 00:54:57 | INFO     | bc_train        | | Next Observations| [[ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ [ 1.51609254e+00  8.71649384e-03 -1.09967995e+00  3.57962860e+02
+   1.38705194e+00  2.57086698e-02]
+ ...
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]
+ [-1.19491622e-01  9.30275768e-03  1.66027224e+00  3.57826508e+02
+   2.67489044e+02  3.59826202e+02]] |
+2025-03-31 00:54:57 | INFO     | bc_train        | | Dones            | [False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False  True False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False  True False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False False False False
+ False False False False  True False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+ False False False False False False False  True False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+  True] |
+2025-03-31 00:56:09 | INFO     | bc_train        | Transitions object created:
+2025-03-31 00:56:09 | INFO     | bc_train        | | Metric            | Value               |
+2025-03-31 00:56:09 | INFO     | bc_train        | |-------------------|---------------------|
+2025-03-31 00:56:09 | INFO     | bc_train        | | Observations      | [[ 1.49126673e+00  8.58683884e-03 -1.50000930e+00  3.59134552e+02
+   2.69926941e+02  2.33813864e-03]
+ [ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ ...
+ [ 1.11091837e-01  9.19488072e-03  1.69441891e+00  3.57851624e+02
+   8.94564285e+01  3.59877869e+02]
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]] |
+2025-03-31 00:56:09 | INFO     | bc_train        | | Actions          | [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+ 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 1 0] |
+2025-03-31 00:56:09 | INFO     | bc_train        | | Next Observations| [[ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ [ 1.51609254e+00  8.71649384e-03 -1.09967995e+00  3.57962860e+02
+   1.38705194e+00  2.57086698e-02]
+ ...
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]
+ [-1.19491622e-01  9.30275768e-03  1.66027224e+00  3.57826508e+02
+   2.67489044e+02  3.59826202e+02]] |
+2025-03-31 00:56:09 | INFO     | bc_train        | | Dones            | [False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False  True False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False  True False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False False False False
+ False False False False  True False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+ False False False False False False False  True False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+  True] |
+2025-03-31 00:56:53 | INFO     | bc_train        | Transitions object created:
+2025-03-31 00:56:53 | INFO     | bc_train        | | Metric            | Value               |
+2025-03-31 00:56:53 | INFO     | bc_train        | |-------------------|---------------------|
+2025-03-31 00:56:53 | INFO     | bc_train        | | Observations      | [[ 1.49126673e+00  8.58683884e-03 -1.50000930e+00  3.59134552e+02
+   2.69926941e+02  2.33813864e-03]
+ [ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ ...
+ [ 1.11091837e-01  9.19488072e-03  1.69441891e+00  3.57851624e+02
+   8.94564285e+01  3.59877869e+02]
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]] |
+2025-03-31 00:56:53 | INFO     | bc_train        | | Actions          | [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+ 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 1 0] |
+2025-03-31 00:56:53 | INFO     | bc_train        | | Next Observations| [[ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ [ 1.51609254e+00  8.71649384e-03 -1.09967995e+00  3.57962860e+02
+   1.38705194e+00  2.57086698e-02]
+ ...
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]
+ [-1.19491622e-01  9.30275768e-03  1.66027224e+00  3.57826508e+02
+   2.67489044e+02  3.59826202e+02]] |
+2025-03-31 00:56:53 | INFO     | bc_train        | | Dones            | [False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False  True False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False  True False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False False False False
+ False False False False  True False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+ False False False False False False False  True False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+  True] |
+2025-03-31 00:58:06 | INFO     | bc_train        | Transitions object created:
+2025-03-31 00:58:06 | INFO     | bc_train        | | Metric            | Value               |
+2025-03-31 00:58:06 | INFO     | bc_train        | |-------------------|---------------------|
+2025-03-31 00:58:06 | INFO     | bc_train        | | Observations      | [[ 1.49126673e+00  8.58683884e-03 -1.50000930e+00  3.59134552e+02
+   2.69926941e+02  2.33813864e-03]
+ [ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ ...
+ [ 1.11091837e-01  9.19488072e-03  1.69441891e+00  3.57851624e+02
+   8.94564285e+01  3.59877869e+02]
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]] |
+2025-03-31 00:58:06 | INFO     | bc_train        | | Actions          | [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0
+ 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0
+ 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 1 0] |
+2025-03-31 00:58:06 | INFO     | bc_train        | | Next Observations| [[ 1.50613475e+00  8.85171443e-03 -1.51731420e+00  3.57930939e+02
+   1.17734063e+00  3.59955841e+02]
+ [ 1.51093173e+00  9.83925909e-03 -1.30838656e+00  3.57700562e+02
+   1.34904981e+00  7.24706845e-03]
+ [ 1.51609254e+00  8.71649384e-03 -1.09967995e+00  3.57962860e+02
+   1.38705194e+00  2.57086698e-02]
+ ...
+ [ 5.83772883e-02  9.41406190e-03  1.66118109e+00  3.57800446e+02
+   3.58151123e+02  3.59907043e+02]
+ [ 9.08785239e-02  9.45576280e-03  1.66981745e+00  3.57790253e+02
+   2.67223541e+02  1.42314658e-01]
+ [-1.19491622e-01  9.30275768e-03  1.66027224e+00  3.57826508e+02
+   2.67489044e+02  3.59826202e+02]] |
+2025-03-31 00:58:06 | INFO     | bc_train        | | Dones            | [False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False  True False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False  True False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False  True False False
+ False False False False False False False False False False False False
+ False False False False  True False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+ False False False False False False False  True False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False  True False False False
+ False False False False False False False False False False False False
+  True] |

@@ -41,7 +41,8 @@ class TrainLogger:
     def __init__(self, base_dir="./logs/model/ppo"):
         self.base_dir = base_dir
         os.makedirs(self.base_dir, exist_ok=True)
-        self.train_logger = self._create_logger("train_model", "train_model.log")
+        self.standard_logger = self._create_logger("train_model", "standard_ppo.log")
+        self.naive_logger = self._create_logger("naive_train_model", "naive_ppo.log")
 
     def _create_logger(self, name, filename, level=logging.DEBUG, 
                        fmt=LOG_FORMAT):
@@ -64,6 +65,7 @@ class PretrainLogger:
         self.base_dir = base_dir
         os.makedirs(self.base_dir, exist_ok=True)
         self.gail_logger    = self._create_logger("gail_train", "gail.log")
+        self.bc_logger      = self._create_logger("bc_train", "bc.log")
 
     def _create_logger(self, name, filename, level=logging.DEBUG, 
                        fmt=LOG_FORMAT):

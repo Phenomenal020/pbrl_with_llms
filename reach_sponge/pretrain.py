@@ -15,12 +15,15 @@ from imitation.data import rollout
 from imitation.algorithms import bc
 from stable_baselines3.common.evaluation import evaluate_policy
 
+from logger import pretrain_logger
+
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.common.monitor import Monitor
+
 
 def _main(use_graphics=False, dev=None):
     
     env = ReachSponge()
-    
-    # log_dir = "logs/pretrain/bc"
     
     # Load data from the npz file.
     data = np.load("expert_reach_sponge.npz", allow_pickle=True)
@@ -58,6 +61,13 @@ def _main(use_graphics=False, dev=None):
     print("Actions shape:", transitions.acts)
     print("Next Observations shape:", transitions.next_obs)
     print("Dones shape:", transitions.dones)
+    pretrain_logger.bc_logger.info("Transitions object created:")
+    pretrain_logger.bc_logger.info("| Metric            | Value               |")
+    pretrain_logger.bc_logger.info("|-------------------|---------------------|")
+    pretrain_logger.bc_logger.info(f"| Observations      | {transitions.obs} |")
+    pretrain_logger.bc_logger.info(f"| Actions          | {transitions.acts} |")
+    pretrain_logger.bc_logger.info(f"| Next Observations| {transitions.next_obs} |")
+    pretrain_logger.bc_logger.info(f"| Dones            | {transitions.dones} |")   
 
     rng = np.random.default_rng()
     bc_trainer = bc.BC(
@@ -72,20 +82,37 @@ def _main(use_graphics=False, dev=None):
     print(env.action_space.contains(1))
     print(env.action_space.contains(2))
     
+    def make_env(port):
+        env = ReachSponge(use_graphics=False, port=port)  # Pass the desired port
+        env = Monitor(env, filename=f"models/pre_train/ppo/reach_sponge_monitor_{port}.csv")
+        return env
+
+    # Manually specify the ports you want to use for each environment
+    manual_ports = [5005, 5261, 5517, 5750, 5801, 5823, 5837, 5851]
+
+    # Create a list of lambda functions for each environment, each with its assigned port
+    env_fns = [lambda port=port: make_env(port) for port in manual_ports]
+
+    # Wrap the environments in a vectorized environment; you can use DummyVecEnv or SubprocVecEnv
+    venv = SubprocVecEnv(env_fns)
     
-    # reward_before_training, _ = evaluate_policy(bc_trainer.policy, env, 40)
-    # print(f"Reward before training: {reward_before_training}")
-    # print(bc_trainer.policy.load_state_dict())
-    # print(bc_trainer.policy.state_dict())
     
-    bc_trainer.train(n_epochs=10, reset_tensorboard=False)
-    reward_after_training, _ = evaluate_policy(bc_trainer.policy, env, 40)
+    reward_before_training, _ = evaluate_policy(bc_trainer.policy, venv, 16)
+    print(f"Reward before training: {reward_before_training}")
+    pretrain_logger.bc_logger.info(f"Reward before training: {reward_before_training}")
+    
+    bc_trainer.train(n_epochs=8, reset_tensorboard=False)
+    reward_after_training, _ = evaluate_policy(bc_trainer.policy, venv, 16)
+    
+    print("Training completed.")
+    pretrain_logger.bc_logger.info("Training completed.")
+    
     print(f"Reward after training: {reward_after_training}")
-    print(bc_trainer.policy.state_dict())
-    # bc_trainer.policy.save("models/pretrain_dqn")
+    pretrain_logger.bc_logger.info(f"Reward after training: {reward_after_training}")
     
-    
-    # Reward after training: -36.16291978061199
+    # Save the policy
+    bc_trainer.save_policy("models/pre_train/bc_policy")
+    pretrain_logger.bc_logger.info("Policy saved.")    
 
 
 

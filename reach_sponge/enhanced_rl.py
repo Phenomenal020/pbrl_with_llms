@@ -17,6 +17,8 @@ from generate_poses import GeneratePoses
 
 from perception import Perception
 
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+
 try:
     import gymnasium as gym
 except ImportError:

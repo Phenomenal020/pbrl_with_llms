@@ -1,5 +1,4 @@
 # Detailed docstrings are generated using ChatGPT and cross-checked for accuracy
-
 # Some code from : https://github.com/empriselab/RCareWorld/blob/phy-robo-care/pyrcareworld/pyrcareworld/demo/examples/example_rl.py  
 
 import numpy as np
@@ -13,12 +12,6 @@ from perception import Perception
 
 import torch
 
-# Ensure required directories exist.
-os.makedirs("./naive_rl/models", exist_ok=True)
-os.makedirs("./naive_rl/tensorboard_logs", exist_ok=True)
-os.makedirs("./naive_rl/trajectories", exist_ok=True)
-os.makedirs("./naive_rl/logs", exist_ok=True)
-
 try:
     import gymnasium as gym
 except ImportError:
@@ -27,13 +20,12 @@ except ImportError:
 from gymnasium import spaces
 
 from pyrcareworld.envs.bathing_env import BathingEnv
-import pyrcareworld.attributes as attr
-from pyrcareworld.envs.base_env import RCareWorld
 
-from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
-from stable_baselines3.ppo import MlpPolicy
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3 import PPO
+
+from logger import train_logger
 
 def set_global_seed(seed):
     random.seed(seed)
@@ -53,8 +45,7 @@ class ReachSponge(gym.Env):
     def __init__(self, use_graphics=False, dev=None, port: int = None):
         super(ReachSponge, self).__init__()
         
-        # Initialize the bathing environment
-        # If a port is provided, pass it to BathingEnv.
+        # Initialise the bathing environment - If a port is provided, pass it to BathingEnv.
         if port is not None:
             self.env = BathingEnv(graphics=use_graphics, port=port) if not dev else BathingEnv(graphics=use_graphics, executable_file="@editor", port=port)
         else:
@@ -74,13 +65,14 @@ class ReachSponge(gym.Env):
         self.sponge = self.env.get_sponge()
         self.env.step()
         
-        
         # Initialise an n_steps variable to keep track of number of steps taken per episode. 
         self.n_steps = 0
         # Initialise an n_episodes variable to keep track of the total number of episodes
         self.n_episodes = 0
         # Initialise an n_eps_steps to keep track of the total number of steps taken in the current episode
         self.n_eps_steps = 0
+        # Track the number of successes
+        self.n_success = 0
         
         #  define the action space - Discrete as recommended by the rcareworld authors
         self.action_space = spaces.Discrete(3, start=0)        
@@ -90,12 +82,10 @@ class ReachSponge(gym.Env):
             np.array([-5.0, -2.0, -5.0]),          # robot_position
             np.array([-360, -360, -360])           # robot_rotation
         ])
-
         high = np.concatenate([
             np.array([5.0, 2.0, 5.0]),             # robot_position
             np.array([360, 360, 360])              # robot_rotation
         ])
-
         # Define the flattened observation space.
         self.observation_space = spaces.Box(low=low, high=high, dtype=np.float32)
         
@@ -103,7 +93,7 @@ class ReachSponge(gym.Env):
          
         #  Randomise Robot's initial position and raise the gripper on initialisation
         # For position
-        pose = random.choice(self.poses)
+        pose = self.np_random.choice(self.poses)
         x, y, z = pose[0][0], pose[0][1], pose[0][2]
         self.robot.SetPosition([x, y, z])
         # For rotation
@@ -114,6 +104,11 @@ class ReachSponge(gym.Env):
         
         print(f"Position --- {[x, y, z]}")
         print(f"rotation --- {[xrot, yrot, zrot]}")
+        
+        self.returns = 0
+        
+        # for reward shaping
+        self.prev_distance = np.linalg.norm(np.array(self.sponge.data.get("position")) - np.array(self.robot.data.get("position")))
          
         # Raise the gripper to a safe height for easy obstacle avoidance
         self.gripper.GripperOpen()
@@ -147,7 +142,7 @@ class ReachSponge(gym.Env):
             
         #  Randomise Robot's initial position and raise the gripper on initialisation
         # For position
-        pose = random.choice(self.poses)
+        pose = self.np_random.choice(self.poses)
         x, y, z = pose[0][0], pose[0][1], pose[0][2]
         self.robot.SetPosition([x, y, z])
         # For rotation
@@ -158,6 +153,11 @@ class ReachSponge(gym.Env):
         
         print(f"Position --- {[x, y, z]}")
         print(f"rotation --- {[xrot, yrot, zrot]}")
+        
+        # for reward shaping
+        self.prev_distance = np.linalg.norm(np.array(self.sponge.data.get("position")) - np.array(self.robot.data.get("position")))
+        
+        self.returns = 0
          
         # Raise the gripper to a safe height for easy obstacle avoidance
         self.gripper.GripperOpen()
@@ -284,18 +284,14 @@ class ReachSponge(gym.Env):
         sponge_pos = self.sponge.data.get("position")
         robot_pos = self.robot.data.get("position")
         robot_rot = self.robot.data.get("rotation")
-        robot_x, robot_z = robot_pos[0], robot_pos[2]
-        sponge_x, sponge_z = sponge_pos[0], sponge_pos[2]
         self.env.step()
         
-        # Alternatively;
-        dist = np.sqrt((sponge_x - robot_x)**2 + (sponge_z - robot_z)**2)
-        reward = -dist  
+        reward = -0.1  # Sparse rewards simulation. -0.1 to encourage efficiency.
         
-        x_low = -3.0
-        x_high = 3.0
-        z_low = -3.0
-        z_high = 3.0
+        x_low = -2.75
+        x_high = 2.75
+        z_low = -2.75
+        z_high = 2.75
 
         truncated = False
         is_done = False
@@ -306,30 +302,36 @@ class ReachSponge(gym.Env):
         self.n_eps_steps = self.n_eps_steps + 1
         
         # If the robot tries to go off-bounds, Penalise the robot and truncate the episode
+        # My current action space doesnot have a Move_back action, so out of bounds problems may not be easy to recover from.
         if (robot_pos[0] > x_high or robot_pos[0] < x_low or robot_pos[2] > z_high or robot_pos[2] < z_low):
-            reward = reward - 5
+            reward = reward - 10  # To keep it within the environment's boundaries
             truncated = True
             
         # Penalise the robot and end the episode if there is a collision
+        # The robot might get stuck or fall. Punish this severely.
         if len(collision) > 0:
-            reward = reward - 10
+            reward = reward - 10  # If is_done is set to true, this might cause the robot to think this is the goal. So implement a reward deduction.
             is_done = True
             
         # Check if the robot is in the goal area
         full_goal, partial_goal = self.is_in_goal_area(robot_pos, robot_rot)
         if full_goal:
             print("------ in goal area with correct gripper alignment ------")
-            reward = reward + 20
+            reward = reward + 30
+            self.n_success += 1
             is_done = True
         if partial_goal:
             print("------ in goal area with incorrect gripper alignment ------")
-            reward = reward + 10
+            reward = reward + 20
             is_done = True
+            self.n_success += 1
             
         # Truncate after 100 steps per episode
-        if self.n_eps_steps >= 75:
+        if self.n_eps_steps >= 100:
             truncated = True
-            # is_done = True 
+            # reward += -2 * np.linalg.norm(np.array(sponge_pos) - np.array(robot_pos)) # Sparse rewards
+            
+        self.returns += reward
         
         print({
             "n_steps": self.n_steps,
@@ -338,8 +340,21 @@ class ReachSponge(gym.Env):
             "true reward": reward,
             "done": is_done,
             "truncated": truncated,
-            "n_collisions": len(collision)
-        })   
+            "n_collisions": len(collision),
+            "n_successes": self.n_success,
+            "returns": self.returns
+        })  
+        log_str = (
+            "\n"
+            "+-------------+---------------+--------------------+-------------+-------+-----------+--------------+-------------+-------------+\n"
+            "| n_steps     | num_episodes  | num_episode_steps  | true reward | done  | truncated | n_collisions | n_successes | returns |\n"
+            "+-------------+---------------+--------------------+-------------+-------+-----------+--------------+-------------+-------------+\n"
+            f"| {self.n_steps:<11} | {self.n_episodes:<13} | {self.n_eps_steps:<18} | {reward:<11} | {str(is_done):<5} | {str(truncated):<9} | {len(collision):<12} | {self.n_success:<11} | {self.returns:<11} | \n"
+            "+-------------+---------------+--------------------+-------------+-------+-----------+--------------+-------------+\n"
+        )
+
+        train_logger.naive_logger.info(log_str)
+
         
         return (reward, is_done, truncated)
     
@@ -381,74 +396,67 @@ class ReachSponge(gym.Env):
               
                    
 if __name__ == "__main__":
-    # Initialise the environment
-    # env = ReachSponge()
-    # # Wrap the environment for monitoring and vectorisation
-    # env = Monitor(env, filename="naive_reach_sponge_monitor.csv") 
-    # env = DummyVecEnv([lambda: env])
-    
+        
     def make_env(port):
         env = ReachSponge(use_graphics=False, port=port)  
         env = Monitor(env, filename=f"naive_reach_sponge_monitor_{port}.csv")
         return env
 
-    # Manually specify the ports you want to use for each environment
-    manual_ports = [5005, 5261, 5517, 5750, 5801, 5823, 5837, 5851]
+    # Manually specify the ports to use for each environment
+    manual_ports = [5005, 5261, 5517, 5750, 5801, 5823, 5837, 5851, 5875, 5899]
 
     # Create a list of lambda functions for each environment, each with its assigned port
     env_fns = [lambda port=port: make_env(port) for port in manual_ports]
-    
     env = SubprocVecEnv(env_fns)
-    
-    # dirs for my models
-    models_dir = "models/dqn"
-    logdir = "logs/train"
-    if not os.path.exists(models_dir):
-        os.makedirs(models_dir)
-    if not os.path.exists(logdir):
-        os.makedirs(logdir)
+        
+    # Directories for models and logs
+    models_dir = "models/naive_rl/ppo"
+    logdir = "logs/naive_rl/ppo"
+    os.makedirs(models_dir, exist_ok=True)
+    os.makedirs(logdir, exist_ok=True)
 
     # Check for existing saved models (checkpoints)
     latest_checkpoint = None
     latest_timestep = 0
-    checkpoint_files = glob.glob(os.path.join(models_dir, "naive_reach_sponge_dqn*.zip"))
-    # Loop through each checkpoint file and uodate the latest timestep to the last one
+    checkpoint_files = glob.glob(os.path.join(models_dir, "naive_reach_sponge_ppo*.zip"))
+        
+     # Loop through each checkpoint file and update the latest timestep variable to the last checkpoint file's save timestep
     for f in checkpoint_files:
         basename = os.path.basename(f)
-        # Extract the timestep from filename
         try:
-            # remove filename + suffix and retrieve SAVE_INTERVAL == timestep
-            timestep = int(basename.replace("naive_reach_sponge_dqn", "").replace(".zip", ""))
+            # Remove filename parts and retrieve SAVE_INTERVAL timestep
+            timestep = int(basename.replace("naive_reach_sponge_ppo", "").replace(".zip", ""))
             if timestep > latest_timestep:
                 latest_timestep = timestep
                 latest_checkpoint = f
         except ValueError:
             continue
-    
-    # If a checkpoint exists, load it. Else, create a new model
+        
+    # If a checkpoint exists, load it. Else, create a new model.
     if latest_checkpoint is not None:
         print(f"Resuming training from checkpoint: {latest_checkpoint}")
-        model = PPO.load(latest_checkpoint, env=env, tensorboard_log=logdir)
+        model = PPO.load(latest_checkpoint, env=env, tensorboard_log=logdir, n_steps=1024)
     else:
-        print("No checkpoint found. Loading the pretrained model.")
-        model = PPO.load("models/pretrain/ppo_pretrained_model.zip", env, tensorboard_log=logdir)
-    
-    #  Training parameters
-    TOTAL_TIMESTEPS = 50000  
-    SAVE_INTERVAL = 500
+        print("No checkpoint found. Loading the pre-trained model.")
+        model = PPO.load("models/standard_rl/ppo/standard_reach_sponge_ppo28000.zip", env=env, tensorboard_log=logdir)  # From a checkpoint in standard rl models
+
+        
+    # Training parameters
+    TOTAL_TIMESTEPS = 100000
+    SAVE_INTERVAL = 1000
     REMAINING_TIMESTEPS = TOTAL_TIMESTEPS - latest_timestep
-    
+        
     # Incremental training loop starting from the latest saved timestep
-    for i in range(latest_timestep, latest_timestep  + REMAINING_TIMESTEPS, SAVE_INTERVAL):
-        model.learn(total_timesteps=SAVE_INTERVAL, reset_num_timesteps=False, tb_log_name="dqn")
+    for i in range(latest_timestep, latest_timestep + REMAINING_TIMESTEPS, SAVE_INTERVAL):
+        model.learn(total_timesteps=SAVE_INTERVAL,
+                    reset_num_timesteps=False,
+                    tb_log_name="ppo")
+            
         # Save the model checkpoint with the cumulative timestep count
-        save_path = f"{models_dir}/naive_reach_sponge_dqn{i + SAVE_INTERVAL}.zip"
+        cumulative_timestep = i + SAVE_INTERVAL
+        save_path = os.path.join(models_dir, f"naive_reach_sponge_ppo{cumulative_timestep}.zip")
         model.save(save_path)
-        print(f"Model saved at timestep {i + SAVE_INTERVAL}")
-    
+        print(f"Model saved at timestep {cumulative_timestep}")
+        
     # Close the environment after training
     env.close()
-    
-    
-
-# Rewards before training: -65.808583 +/- 5.529100999999997

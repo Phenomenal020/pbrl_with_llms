@@ -259,15 +259,6 @@ if __name__ == "__main__":
     gripper.GripperOpen()
     env.step(50)
     
-    # robot.MoveForward(0.27, 2)
-    # env.step(100)
-    
-    # robot.TurnLeft(90, 1)
-    # env.step(300)
-    
-    # robot.MoveForward(0.2, 2)
-    # env.step(50)
-    
     print(robot.data.get("position"))
     print(robot.data.get("position"))
     
@@ -289,7 +280,12 @@ if __name__ == "__main__":
     
     # p.get_poses()
     
+    # Do not close window
+    env.WaitLoadDone()
     
+    
+    
+ 
     # TESTBED FOR DIP SPONGE (TBC)-------------------------------
     # Raise the gripper to a safe height for easy obstacle avoidance
     # gripper_pos = [robot.data["position"][0], sponge.data.get("position")[1] + 0.5, robot.data["position"][2]]
@@ -397,6 +393,3 @@ if __name__ == "__main__":
     # rgb = np.frombuffer(p.manikin_camera.data["rgb"], dtype=np.uint8)
     # rgb = cv2.imdecode(rgb, cv2.IMREAD_COLOR)
     # cv2.imwrite("reach_manikin.png", rgb)
-    
-    # Do not close window
-    env.WaitLoadDone()

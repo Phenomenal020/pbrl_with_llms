@@ -135,7 +135,7 @@ def _main(use_graphics=False, dev=None):
     pretrain_logger.gail_logger.info(f"Rewards before training: {np.mean(learner_rewards_before_training)} +/- {np.std(learner_rewards_before_training)}")
     
     # Train
-    gail_trainer.train(10000)
+    gail_trainer.train(16384)
     pretrain_logger.gail_logger.info("Training completed.")
     print("Training completed.")
     
