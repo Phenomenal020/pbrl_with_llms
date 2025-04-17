@@ -244,6 +244,9 @@ if __name__ == "__main__":
     sponge = p.get_sponge()
     gripper = p.get_gripper()
 
+    print(sponge.data.get("position"))
+    print(sponge.data.get("rotation"))
+
     robot.SetPosition([-0.1, 0, 1.65])
     robot.SetRotation([357, 269, 0])
 

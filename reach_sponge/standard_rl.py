@@ -93,7 +93,7 @@ class ReachSponge(gym.Env):
          
         #  Randomise Robot's initial position and raise the gripper on initialisation
         # For position
-        pose = random.choice(self.poses)
+        pose = self.np_random.choice(self.poses)
         x, y, z = pose[0][0], pose[0][1], pose[0][2]
         self.robot.SetPosition([x, y, z])
         # For rotation
@@ -142,7 +142,7 @@ class ReachSponge(gym.Env):
             
         #  Randomise Robot's initial position and raise the gripper on initialisation
         # For position
-        pose = random.choice(self.poses)
+        pose = self.np_random.choice(self.poses)
         x, y, z = pose[0][0], pose[0][1], pose[0][2]
         self.robot.SetPosition([x, y, z])
         # For rotation

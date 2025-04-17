@@ -22,10 +22,13 @@ class DetectPose:
   
   def __init__(self, image):
     # Create a PoseLandmarker object.
-    base_options = python.BaseOptions(model_asset_path='pose_landmarker.task')
-    options = vision.PoseLandmarkerOptions(
-        base_options=base_options,
-        output_segmentation_masks=False)  # Disable segmentation mask output
+    try:
+      base_options = python.BaseOptions(model_asset_path='pose_landmarker.task')
+      options = vision.PoseLandmarkerOptions(
+          base_options=base_options,
+          output_segmentation_masks=False)  # Disable segmentation mask output
+    except e:
+      print(e)
     self.image = image
     self.detector = vision.PoseLandmarker.create_from_options(options)
     
@@ -55,29 +58,29 @@ class DetectPose:
     
     
     # right arm
-    right_index = world_landmarks[20]
+    right_wrist = world_landmarks[16]
     right_shoulder = world_landmarks[12]
     # left arm
     left_shoulder = world_landmarks[11]
-    left_index = world_landmarks[19]
+    left_wrist = world_landmarks[15]
     # right leg
     right_hip = world_landmarks[24]
-    right_foot_index = world_landmarks[32]
+    right_ankle = world_landmarks[28]
     # left leg
     left_hip = world_landmarks[23]
-    left_foot_index = world_landmarks[31]
+    left_ankle = world_landmarks[27]
     # mid-body
     # mid_body = (right_shoulder, left_shoulder, left_hip, right_hip, right_shoulder)
     
     return True, {
-      "right_index": right_index,
+      "right_wrist": right_wrist,
       "right_shoulder": right_shoulder,
       "left_shoulder": left_shoulder,
-      "left_index": left_index,
+      "left_wrist": left_wrist,
       "right_hip": right_hip,
-      "right_foot_index": right_foot_index,
+      "right_ankle": right_ankle,
       "left_hip": left_hip,
-      "left_foot_index": left_foot_index,
+      "left_ankle": left_ankle,
     }
 
 # if __name__ == "__main__":

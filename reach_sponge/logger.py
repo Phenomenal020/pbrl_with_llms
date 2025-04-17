@@ -43,6 +43,7 @@ class TrainLogger:
         os.makedirs(self.base_dir, exist_ok=True)
         self.standard_logger = self._create_logger("train_model", "standard_ppo.log")
         self.naive_logger = self._create_logger("naive_train_model", "naive_ppo.log")
+        self.enhanced_logger = self._create_logger("enhanced_train_model", "enhanced_ppo.log")
 
     def _create_logger(self, name, filename, level=logging.DEBUG, 
                        fmt=LOG_FORMAT):
