@@ -64,5 +64,3 @@ Special thanks to the following projects and repositories for some of the source
 
 
 ---
-
-**License**: Include license information here (e.g., MIT, Apache 2.0) as appropriate.
