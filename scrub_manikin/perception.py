@@ -64,28 +64,28 @@ class Perception:
 
         
         # right shoulder - ✅
-        # self.test_camera.SetTransform(position=self.get_landmark("right_shoulder"), rotation=[90, 0, 0])
+        self.test_camera.SetTransform(position=self.get_landmark("right_shoulder"), rotation=[90, 0, 0])
         
-        # # right wrist - ✅
-        # self.test_camera2.SetTransform(position=self.get_landmark("right_wrist"), rotation=[90, 0, 0])
+        # right wrist - ✅
+        self.test_camera2.SetTransform(position=self.get_landmark("right_wrist"), rotation=[90, 0, 0])
         
-        # # left shoulder - ✅
-        # self.test_camera3.SetTransform(position=self.get_landmark("left_shoulder"), rotation=[90, 0, 0])
+        # left shoulder - ✅
+        self.test_camera3.SetTransform(position=self.get_landmark("left_shoulder"), rotation=[90, 0, 0])
         
-        # # left wrist - ✅
-        # self.test_camera4.SetTransform(position=self.get_landmark("left_wrist"), rotation=[90, 0, 0])
+        # left wrist - ✅
+        self.test_camera4.SetTransform(position=self.get_landmark("left_wrist"), rotation=[90, 0, 0])
 
-        # # right hip - ✅
-        # self.test_camera5.SetTransform(position=self.get_landmark("right_hip"), rotation=[90, 0, 0])
+        # right hip - ✅
+        self.test_camera5.SetTransform(position=self.get_landmark("right_hip"), rotation=[90, 0, 0])
         
-        # # left hip - ✅
-        # self.test_camera6.SetTransform(position=self.get_landmark("left_hip"), rotation=[90, 0, 0])
+        # left hip - ✅
+        self.test_camera6.SetTransform(position=self.get_landmark("left_hip"), rotation=[90, 0, 0])
         
-        # # right ankle - ✅
-        # self.test_camera7.SetTransform(position=self.get_landmark("right_ankle"), rotation=[90, 0, 0])
+        # right ankle - ✅
+        self.test_camera7.SetTransform(position=self.get_landmark("right_ankle"), rotation=[90, 0, 0])
         
-        # # left ankle - ✅
-        # self.test_camera8.SetTransform(position=self.get_landmark("left_ankle"), rotation=[90, 0, 0])
+        # left ankle - ✅
+        self.test_camera8.SetTransform(position=self.get_landmark("left_ankle"), rotation=[90, 0, 0])
         
     
     # Get sponge 

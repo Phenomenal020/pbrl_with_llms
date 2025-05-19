@@ -1,0 +1,47 @@
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.6, "n_steps": 6, "num_episodes": 0, "num_episodes_steps": 6, "Current pose": [[1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -14.000000000000002, "n_steps": 46, "num_episodes": 1, "num_episodes_steps": 40, "Current pose": [[-2.0, 0.0, -1.5], [0.0, 90.0, 0.0]]}
+{"true reward": 19.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 1, "returns": 12.40000000000001, "n_steps": 122, "num_episodes": 2, "num_episodes_steps": 76, "Current pose": [[-2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -11.8, "n_steps": 140, "num_episodes": 3, "num_episodes_steps": 18, "Current pose": [[1.5, 0.0, 1.5], [0.0, 0.0, 0.0]]}
+{"true reward": 29.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 2, "returns": 27.299999999999997, "n_steps": 167, "num_episodes": 4, "num_episodes_steps": 27, "Current pose": [[2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -11.0, "n_steps": 177, "num_episodes": 5, "num_episodes_steps": 10, "Current pose": [[-1.75, 0.0, 0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.7, "n_steps": 184, "num_episodes": 6, "num_episodes_steps": 7, "Current pose": [[-1.75, 0.0, 2.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 2, "returns": -10.7, "n_steps": 191, "num_episodes": 7, "num_episodes_steps": 7, "Current pose": [[-2.0, 0.0, 0.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.4, "n_steps": 195, "num_episodes": 8, "num_episodes_steps": 4, "Current pose": [[2.0, 0.0, 0.5], [0.0, 270.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.7, "n_steps": 202, "num_episodes": 9, "num_episodes_steps": 7, "Current pose": [[-1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+
+
+
+
+
+
+
+
+
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.6, "n_steps": 6, "num_episodes": 0, "num_episodes_steps": 6, "Current pose": [[1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 0, "returns": -10.2, "n_steps": 8, "num_episodes": 1, "num_episodes_steps": 2, "Current pose": [[-2.0, 0.0, -1.5], [0.0, 90.0, 0.0]]}
+{"true reward": 19.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 1, "returns": 13.200000000000006, "n_steps": 76, "num_episodes": 2, "num_episodes_steps": 68, "Current pose": [[-2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -10.9, "n_steps": 85, "num_episodes": 3, "num_episodes_steps": 9, "Current pose": [[1.5, 0.0, 1.5], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 1, "returns": -10.9, "n_steps": 94, "num_episodes": 4, "num_episodes_steps": 9, "Current pose": [[2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -11.0, "n_steps": 104, "num_episodes": 5, "num_episodes_steps": 10, "Current pose": [[-1.75, 0.0, 0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -10.7, "n_steps": 111, "num_episodes": 6, "num_episodes_steps": 7, "Current pose": [[-1.75, 0.0, 2.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -10.4, "n_steps": 115, "num_episodes": 7, "num_episodes_steps": 4, "Current pose": [[-2.0, 0.0, 0.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -10.4, "n_steps": 119, "num_episodes": 8, "num_episodes_steps": 4, "Current pose": [[2.0, 0.0, 0.5], [0.0, 270.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -10.7, "n_steps": 126, "num_episodes": 9, "num_episodes_steps": 7, "Current pose": [[-1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+
+
+
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.6, "n_steps": 6, "num_episodes": 0, "num_episodes_steps": 6, "Current pose": [[1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 0, "returns": -10.2, "n_steps": 8, "num_episodes": 1, "num_episodes_steps": 2, "Current pose": [[-2.0, 0.0, -1.5], [0.0, 90.0, 0.0]]}
+{"true reward": 19.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 1, "returns": 13.300000000000006, "n_steps": 75, "num_episodes": 2, "num_episodes_steps": 67, "Current pose": [[-2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": 29.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 2, "returns": 29.099999999999998, "n_steps": 84, "num_episodes": 3, "num_episodes_steps": 9, "Current pose": [[1.5, 0.0, 1.5], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -11.4, "n_steps": 98, "num_episodes": 4, "num_episodes_steps": 14, "Current pose": [[2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.7, "n_steps": 105, "num_episodes": 5, "num_episodes_steps": 7, "Current pose": [[-1.75, 0.0, 0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.9, "n_steps": 114, "num_episodes": 6, "num_episodes_steps": 9, "Current pose": [[-1.75, 0.0, 2.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 2, "returns": -10.5, "n_steps": 119, "num_episodes": 7, "num_episodes_steps": 5, "Current pose": [[-2.0, 0.0, 0.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.1, "n_steps": 120, "num_episodes": 8, "num_episodes_steps": 1, "Current pose": [[2.0, 0.0, 0.5], [0.0, 270.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 2, "returns": -10.1, "n_steps": 121, "num_episodes": 9, "num_episodes_steps": 1, "Current pose": [[-1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": 19.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 3, "returns": 18.299999999999997, "n_steps": 138, "num_episodes": 10, "num_episodes_steps": 17, "Current pose": [[-1.75, 0.0, 1.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 3, "returns": -10.9, "n_steps": 147, "num_episodes": 11, "num_episodes_steps": 9, "Current pose": [[-1.5, 0.0, -0.5], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 3, "returns": -10.9, "n_steps": 156, "num_episodes": 12, "num_episodes_steps": 9, "Current pose": [[1.75, 0.0, 0.0], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 3, "returns": -13.400000000000002, "n_steps": 190, "num_episodes": 13, "num_episodes_steps": 34, "Current pose": [[2.0, 0.0, -0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 3, "returns": -10.1, "n_steps": 191, "num_episodes": 14, "num_episodes_steps": 1, "Current pose": [[1.5, 0.0, 0.0], [0.0, 180.0, 0.0]]}

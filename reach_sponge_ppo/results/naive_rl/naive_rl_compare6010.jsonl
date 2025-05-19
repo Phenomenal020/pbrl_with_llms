@@ -1,0 +1,35 @@
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.9, "n_steps": 9, "num_episodes": 0, "num_episodes_steps": 9, "Current pose": [[1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -11.8, "n_steps": 27, "num_episodes": 1, "num_episodes_steps": 18, "Current pose": [[-2.0, 0.0, -1.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 0, "returns": -10.1, "n_steps": 28, "num_episodes": 2, "num_episodes_steps": 1, "Current pose": [[-2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": 29.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 1, "returns": 28.9, "n_steps": 39, "num_episodes": 3, "num_episodes_steps": 11, "Current pose": [[1.5, 0.0, 1.5], [0.0, 0.0, 0.0]]}
+{"true reward": 29.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 2, "returns": 28.599999999999998, "n_steps": 53, "num_episodes": 4, "num_episodes_steps": 14, "Current pose": [[2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.4, "n_steps": 57, "num_episodes": 5, "num_episodes_steps": 4, "Current pose": [[-1.75, 0.0, 0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.7, "n_steps": 64, "num_episodes": 6, "num_episodes_steps": 7, "Current pose": [[-1.75, 0.0, 2.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 2, "returns": -10.5, "n_steps": 69, "num_episodes": 7, "num_episodes_steps": 5, "Current pose": [[-2.0, 0.0, 0.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.1, "n_steps": 70, "num_episodes": 8, "num_episodes_steps": 1, "Current pose": [[2.0, 0.0, 0.5], [0.0, 270.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 2, "returns": -10.1, "n_steps": 71, "num_episodes": 9, "num_episodes_steps": 1, "Current pose": [[-1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+
+
+
+
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -11.6, "n_steps": 16, "num_episodes": 0, "num_episodes_steps": 16, "Current pose": [[1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -15.199999999999998, "n_steps": 68, "num_episodes": 1, "num_episodes_steps": 52, "Current pose": [[-2.0, 0.0, -1.5], [0.0, 90.0, 0.0]]}
+{"true reward": 19.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 1, "returns": 17.4, "n_steps": 94, "num_episodes": 2, "num_episodes_steps": 26, "Current pose": [[-2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": 29.9, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 2, "returns": 28.4, "n_steps": 110, "num_episodes": 3, "num_episodes_steps": 16, "Current pose": [[1.5, 0.0, 1.5], [0.0, 0.0, 0.0]]}
+{"true reward": -0.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 2, "returns": -9.99999999999998, "n_steps": 210, "num_episodes": 4, "num_episodes_steps": 100, "Current pose": [[2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 2, "returns": -11.6, "n_steps": 226, "num_episodes": 5, "num_episodes_steps": 16, "Current pose": [[-1.75, 0.0, 0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 2, "returns": -10.7, "n_steps": 233, "num_episodes": 6, "num_episodes_steps": 7, "Current pose": [[-1.75, 0.0, 2.5], [0.0, 90.0, 0.0]]}
+
+
+
+
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.6, "n_steps": 6, "num_episodes": 0, "num_episodes_steps": 6, "Current pose": [[1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 0, "returns": -10.1, "n_steps": 7, "num_episodes": 1, "num_episodes_steps": 1, "Current pose": [[-2.0, 0.0, -1.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.6, "n_steps": 13, "num_episodes": 2, "num_episodes_steps": 6, "Current pose": [[-2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 0, "returns": -10.1, "n_steps": 14, "num_episodes": 3, "num_episodes_steps": 1, "Current pose": [[1.5, 0.0, 1.5], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -13.400000000000002, "n_steps": 48, "num_episodes": 4, "num_episodes_steps": 34, "Current pose": [[2.0, 0.0, 1.0], [0.0, 0.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.799999999999999, "n_steps": 56, "num_episodes": 5, "num_episodes_steps": 8, "Current pose": [[-1.75, 0.0, 0.5], [0.0, 180.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.7, "n_steps": 63, "num_episodes": 6, "num_episodes_steps": 7, "Current pose": [[-1.75, 0.0, 2.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 0, "returns": -10.5, "n_steps": 68, "num_episodes": 7, "num_episodes_steps": 5, "Current pose": [[-2.0, 0.0, 0.5], [0.0, 90.0, 0.0]]}
+{"true reward": -10.1, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -10.1, "n_steps": 69, "num_episodes": 8, "num_episodes_steps": 1, "Current pose": [[2.0, 0.0, 0.5], [0.0, 270.0, 0.0]]}
+{"true reward": -10.1, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 0, "returns": -10.1, "n_steps": 70, "num_episodes": 9, "num_episodes_steps": 1, "Current pose": [[-1.5, 0.0, 2.0], [0.0, 0.0, 0.0]]}

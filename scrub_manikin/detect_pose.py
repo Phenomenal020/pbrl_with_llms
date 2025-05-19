@@ -15,6 +15,8 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from mediapipe import Image, ImageFormat
 
+import cv2
+
 import numpy as np
 
 
@@ -23,14 +25,34 @@ class DetectPose:
   def __init__(self, image):
     # Create a PoseLandmarker object.
     try:
-      base_options = python.BaseOptions(model_asset_path='pose_landmarker.task')
+      base_options = python.BaseOptions(model_asset_path='pose_landmarker3014.task')
       options = vision.PoseLandmarkerOptions(
           base_options=base_options,
           output_segmentation_masks=False)  # Disable segmentation mask output
     except e:
-      print(e)
+      print(f"Landmarker error: {e}")
     self.image = image
     self.detector = vision.PoseLandmarker.create_from_options(options)
+    
+  def draw_landmarks_on_image(self, rgb_image, detection_result):
+        pose_landmarks_list = detection_result.pose_landmarks
+        annotated_image = np.copy(rgb_image)
+
+        # Loop through the detected poses to visualize.
+        for idx in range(len(pose_landmarks_list)):
+            pose_landmarks = pose_landmarks_list[idx]
+
+            # Draw the pose landmarks.
+            pose_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
+            pose_landmarks_proto.landmark.extend([
+            landmark_pb2.NormalizedLandmark(x=landmark.x, y=landmark.y, z=landmark.z) for landmark in pose_landmarks
+            ])
+            solutions.drawing_utils.draw_landmarks(
+            annotated_image,
+            pose_landmarks_proto,
+            solutions.pose.POSE_CONNECTIONS,
+            solutions.drawing_styles.get_default_pose_landmarks_style())
+        return annotated_image
     
   
   def get_landmarks(self):
@@ -40,10 +62,8 @@ class DetectPose:
     # detect poses
     detection_result = self.detector.detect(mp_image)
     
-    # print(f"Detection result: {detection_result}")
-
-    # # Process the detection result. In this case, visualise it.
-    # annotated_image = draw_landmarks_on_image(mp_image.numpy_view(), detection_result)
+    # Process the detection result. In this case, visualise it.
+    # annotated_image = self.draw_landmarks_on_image(mp_image.numpy_view(), detection_result)
     # cv2.imshow("Annotated_image", cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR))
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
@@ -83,16 +103,18 @@ class DetectPose:
       "left_ankle": left_ankle,
     }
 
-# if __name__ == "__main__":
-#   # resize image 
-#   img = cv2.imread("assets/manikin.png")
-#   image = cv2.resize(img, None, fx=0.5, fy=0.5)
+
+
+if __name__ == "__main__":
+  # resize image 
+  img = cv2.imread("assets/manikin.png")
+  image = cv2.resize(img, None, fx=0.5, fy=0.5)
   
-#   # Create a DetectPose instance
-#   pd = DetectPose()
+  # Create a DetectPose instance
+  pd = DetectPose()
     
-#   # Detect pose landmarks from the input image.
-#   detection_result = pd.get_landmarks(image)
+  # Detect pose landmarks from the input image.
+  detection_result = pd.get_landmarks(image)
   
-#   # verify
-#   # print(detection_result)
+  # verify
+  # print(detection_result)

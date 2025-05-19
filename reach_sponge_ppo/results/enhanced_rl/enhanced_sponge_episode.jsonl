@@ -1,0 +1,18 @@
+{"n_steps": 13, "num_episodes": 1, "num_episodes_steps": 13, "true reward": -9.727682428707174, "pred reward": -0.5074883699417114, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -7.147528132507317}
+{"n_steps": 22, "num_episodes": 3, "num_episodes_steps": 9, "true reward": -10.178410400820894, "pred reward": -1.5174193382263184, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -1.9567910414756717}
+{"n_steps": 37, "num_episodes": 5, "num_episodes_steps": 15, "true reward": -9.410595898065528, "pred reward": 0.39837247133255005, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 0, "returns": -7.24734958854148}
+{"n_steps": 49, "num_episodes": 7, "num_episodes_steps": 12, "true reward": -10.12975046401672, "pred reward": 0.7453604340553284, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 0, "returns": -5.417005266035591}
+{"n_steps": 54, "num_episodes": 9, "num_episodes_steps": 5, "true reward": -9.616602610643293, "pred reward": -2.221666097640991, "done": true, "truncated": false, "n_collisions": 2, "n_successes": 0, "returns": -6.242790918102917}
+{"n_steps": 126, "num_episodes": 11, "num_episodes_steps": 72, "true reward": 30.362322778757008, "pred reward": 0.6493844985961914, "done": true, "truncated": false, "n_collisions": 0, "n_successes": 1, "returns": 36.872364162485326}
+{"n_steps": 134, "num_episodes": 13, "num_episodes_steps": 8, "true reward": -9.96360974394267, "pred reward": 0.5245798230171204, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -7.604762580926913}
+{"n_steps": 135, "num_episodes": 15, "num_episodes_steps": 1, "true reward": -20.970181298420606, "pred reward": 4.013970375061035, "done": false, "truncated": true, "n_collisions": 0, "n_successes": 1, "returns": -20.970181298420606}
+{"n_steps": 145, "num_episodes": 17, "num_episodes_steps": 10, "true reward": -10.323019828368938, "pred reward": 0.3286780118942261, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -6.28547338769338}
+{"n_steps": 238, "num_episodes": 19, "num_episodes_steps": 93, "true reward": -8.859880437576654, "pred reward": -0.25772982835769653, "done": true, "truncated": false, "n_collisions": 1, "n_successes": 1, "returns": -7.130770749367501}
+
+
+
+
+
+
+
+

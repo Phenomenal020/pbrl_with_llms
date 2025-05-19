@@ -2,6 +2,7 @@
 # To get the locations of objects in the scene.
 # This file was mostly used during the initial stages to know the locations of objects. Subsequently, the code works fine without it.
 
+from os import preadv
 from pyrcareworld.envs.base_env import RCareWorld
 from pyrcareworld.envs.bathing_env import BathingEnv
 import pyrcareworld.attributes.camera_attr as attr
@@ -10,6 +11,8 @@ import cv2
 
 import mediapipe as mp 
 import json
+import time
+import jsonlines
 
 from detect_pose import DetectPose
 
@@ -17,6 +20,8 @@ from generate_trajectories import GenTrajectory
 
 # import pyrcareworld.attributes as _attr
 from pyrcareworld.attributes.omplmanager_attr import OmplManagerAttr
+from pyrcareworld.attributes import PersonRandomizerAttr
+
 
 # PDController 
 # from pid import PDController
@@ -27,12 +32,400 @@ except ImportError:
     raise Exception("This feature requires ompl, see: https://github.com/ompl/ompl")
 
 
+    
+class ReachMannequin:
+    def __init__(self, env:BathingEnv, robot, gripper, sponge, trajectories):
+        self.env = env  
+        self.robot = robot
+        self.gripper = gripper
+        self.sponge = sponge
+        self.trajectories = trajectories
+        self.initial_sponge_pos = self.sponge.data.get("position")
+        self.env.step()
+        
+        person_randomizer = PersonRandomizerAttr(self.env, 573920)
+        person_randomizer.SetSeed(42)
+        self.env.step()
+        
+        self.person_midpoint = [0.055898, 0.84, 0.003035]  # initialise with a confirmed midpoint
+                
+        # Setup a camera to capture the entire scene
+        self.env.scene_camera = self.env.InstanceObject(name="Camera", id=888888, attr_type=attr.CameraAttr) 
+        # Set position and orientation for the scene camera
+        self.env.scene_camera.SetTransform(position=[0, 4.2, 0.6], rotation=[90, 0, 0.0]) 
+        self.env.scene_camera.Get3DBBox()
+        self.env.step()
+        for i in self.env.scene_camera.data["3d_bounding_box"]:
+            if i == 573920:
+                self.person_midpoint = self.env.scene_camera.data["3d_bounding_box"][i][0]
+                print(f"Person midpoint: {self.person_midpoint}")
+        self.env.step()
+        
+        
+        # self.robot.SetPosition([0.19908380508422852, 0.009266123175621033, 1.05])
+        # self.robot.SetRotation([357.8343505859375, 0, 359.7845764160156])
+        # gripper_pos = [self.robot.data["position"][0], self.initial_sponge_pos[1] + 0.2, self.robot.data["position"][2]]
+        # self.robot.IKTargetDoMove(
+        #     position=gripper_pos,
+        #     duration=1,
+        #     speed_based=False,
+        # )
+        # self.robot.WaitDo()
+        # self.env.step(50)
+        # self.robot.TurnRight(90, 1.5)
+        # self.env.step(250)
+        
+    def grasp_sponge(self):
+         # Raise the gripper to a safe height for easy obstacle avoidance
+        gripper_pos = [self.robot.data["position"][0], self.initial_sponge_pos[1] + 0.2, self.robot.data["position"][2]]
+        self.robot.IKTargetDoMove(
+            position=gripper_pos,
+            duration=1,
+            speed_based=False,
+        )
+        self.robot.WaitDo()
+        self.env.step(50)
+        self.gripper.GripperOpen()
+        self.env.step(50)
+        
+        # Move towards sponge
+        self.robot.MoveForward(0.25, 2)
+        self.env.step(100)
+        
+        # Turn left
+        self.robot.TurnLeft(90, 1.5)
+        self.env.step(200)
+        
+        # Move forward 
+        self.robot.MoveForward(0.2, 2)
+        self.env.step(50)
+        
+        # Lower gripper (Grasp sponge)
+        lower_position = [self.sponge.data.get("position")[0], self.initial_sponge_pos[1]+0.03, self.sponge.data.get("position")[2]]
+        self.robot.IKTargetDoMove(
+            position=lower_position,  
+            duration=1,
+            speed_based=False,
+        )
+        self.robot.WaitDo()
+        self.env.step(50)
+        
+        # Grasp sponge
+        self.gripper.GripperClose()
+        self.env.step(50)
+        
+        # Raise Gripper
+        self.robot.IKTargetDoMove(
+            position=gripper_pos,
+            duration=1,
+            speed_based=False,
+        )
+        self.robot.WaitDo()
+        self.env.step(50)
+        
+    
+    def dip_sponge(self):
+        # Move backwards
+        self.robot.MoveBack(0.40, 2)
+        self.env.step(50)
+            
+        # Lower Gripper to dip sponge
+        lower_position = [self.sponge.data.get("position")[0], self.initial_sponge_pos[1]+0.03, self.sponge.data.get("position")[2]]
+        self.robot.IKTargetDoMove(
+            position=lower_position,  
+            duration=1,
+            speed_based=False,
+        )
+        self.robot.WaitDo()
+        self.env.step(50)
+        
+        # Raise Gripper
+        reference_gripper_pos = [self.robot.data["position"][0], self.initial_sponge_pos[1] + 0.5, self.robot.data["position"][2]]
+        self.robot.IKTargetDoMove(
+            position=reference_gripper_pos,
+            duration=1,
+            speed_based=False,
+        )
+        self.robot.WaitDo()
+        self.env.step(50)
+          
+          
+    
+    def approach_manikin(self):
+         # Turn to face Manikin
+        robot.TurnLeft(90, 1)
+        env.step(300)
+
+        # Move towards Manikin
+        robot.MoveForward(0.90, 2)
+        env.step(200)
+        
+        robot.TurnLeft(90, 1)
+        env.step(300)
+        
+        # Move towards Manikin
+        robot.MoveBack(0.20, 2)
+        env.step(150)
+        
+        # print(f"robot position: {robot.data.get('position')}")
+        # print(f"robot rotation: {robot.data.get('rotation')}")
+        
+        
+        
+    def scrub_manikin(self):
+        # PD Controller gains - Robot arm
+        k_p = 1.0
+        k_d = 2.0 * np.sqrt(k_p)
+
+        # Admittance Controller parameters - Manikin
+        mass       = 1000        # virtual mass (kg·m²)
+        stiffness  = 1      # virtual spring constant (N/m)
+        damping    = 2.0 * np.sqrt(stiffness * mass)  # critically damped
+        desired_force = 6.0       # N
+
+        # Discretisation time step
+        dt = 1  # in seconds
+
+        # indices = [4, 5, 6, 7]
+        indices = [6, 7]
+        # get the EE's current and target positions
+        current = self.gripper.data.get("grasp_point_position")
+        print(f"Initial:  {current}")
+        
+        start = self.trajectories[indices[0]]
+        target = self.trajectories[indices[1]]
+        print(f"Initial Target: {target}")
+        error = np.array(start) - np.array(current)
+        print(f"error: {error}")
+        
+         # align the robot x axis (base)
+        timeout = 10
+        start_time = time.time()
+        while abs(error[0]) > 0.05 and (time.time() - start_time) < timeout:
+            if error[0] < 0:
+                self.robot.MoveBack(-error[0], 1)
+                self.env.step(100)
+            else:
+                self.robot.MoveForward(error[0], 1)
+                self.env.step(100)
+            error = np.array(start) - np.array(self.gripper.data.get("grasp_point_position"))
+        elapsed = time.time() - start_time
+        print(f"Took {elapsed:.2f}s (timeout was {timeout}s)")
+        print(f"Error after x correction: {error}")
+             
+        # align the z axis - define a timeout (in seconds)
+        timeout = 30
+        start_time = time.time()
+        while abs(error[2]) > 0.05 and (time.time() - start_time) < timeout:
+            self.robot.IKTargetDoMove(
+                position=[0, 0, error[2]],
+                duration=4,
+                speed_based=False,
+                relative=True
+            )
+            self.robot.WaitDo()
+            self.env.step(100)
+            error = np.array(start) - np.array(self.gripper.data.get("grasp_point_position"))
+        elapsed = time.time() - start_time
+        print(f"Error after z correction: {error}")
+        print(f"Took {elapsed:.2f}s (timeout was {timeout}s)")
+        
+        # self.robot.SetImmovable(True)
+        print(f"Final pos: {self.gripper.data.get('grasp_point_position')}")
+        print(f"Desired pos: {self.trajectories[indices[0]]}")
+        
+        # Probe
+        contact = False
+        px = 0
+        py = 0
+        pz = 0
+        
+        expert_obs = []
+        expert_actions = []
+        goals = []
+        
+        
+        while contact == False:
+            # get the current position and force
+            current = np.array(self.gripper.data.get('grasp_point_position'))
+            ee = np.array(self.gripper.data.get('grasp_point_position'))
+            force = float(self.sponge.GetForce()[0])
+            pm = self.person_midpoint
+            user_input = int(input("0 to move downward; 1 to move forward; 2 to move upward; 3 to move backward; 4 to move robot base forward; 5 to move robot base backward; 6 to end:"))
+            
+            
+            # expert_obs
+            if user_input == 0:
+                expert_obs.append([ee[0], ee[1], ee[2], force, pm[0], pm[1], pm[2]])
+                # add a small y-offset 
+                dxyz = np.array([0.0, -0.02, 0.0])
+                end_ee = current + dxyz
+                self.robot.IKTargetDoMove(
+                    position=end_ee.tolist(),
+                    duration=2,
+                    speed_based=False,
+                    relative=False
+                )
+                self.robot.WaitDo()
+                self.env.step(100)
+                py += -0.02
+                ee = self.gripper.data.get('grasp_point_position')
+                force = float(self.sponge.GetForce()[0])
+                pm = self.person_midpoint
+                print(f"self.person_midpoint: {self.person_midpoint}")
+                expert_actions.append(0)
+                goals.append("leg")
+                self.env.step()
+            elif user_input == 1:
+                expert_obs.append([ee[0], ee[1], ee[2], force, pm[0], pm[1], pm[2]])
+                # add a small z-offset 
+                dxyz = np.array([0, 0.0, -0.05])
+                end_ee = current + dxyz
+                self.robot.IKTargetDoMove(
+                    position=end_ee.tolist(),
+                    duration=2,
+                    speed_based=False,
+                    relative=False
+                )
+                # self.robot.IKTargetDoComplete()
+                self.robot.WaitDo()
+                self.env.step(100)
+                pz += -0.05
+                ee = self.gripper.data.get('grasp_point_position')
+                force = float(self.sponge.GetForce()[0])
+                pm = self.person_midpoint
+                print(f"self.person_midpoint: {self.person_midpoint}")
+                expert_actions.append(1)
+                goals.append("leg")
+                self.env.step()
+            elif user_input == 2:
+                expert_obs.append([ee[0], ee[1], ee[2], force, pm[0], pm[1], pm[2]])
+                # add a small y-offset 
+                dxyz = np.array([0.0, 0.02, 0.0])
+                end_ee = current + dxyz
+                self.robot.IKTargetDoMove(
+                    position=end_ee.tolist(),
+                    duration=2,
+                    speed_based=False,
+                    relative=False
+                )
+                self.robot.WaitDo()
+                self.env.step(100)
+                py += 0.02
+                ee = self.gripper.data.get('grasp_point_position')
+                force = float(self.sponge.GetForce()[0])
+                pm = self.person_midpoint
+                print(f"self.person_midpoint: {self.person_midpoint}")
+                expert_actions.append(0)
+                goals.append("leg")
+                self.env.step()
+            elif user_input == 3:
+                # add a small z-offset 
+                dxyz = np.array([0, 0.0, 0.05])
+                end_ee = current + dxyz
+                self.robot.IKTargetDoMove(
+                    position=end_ee.tolist(),
+                    duration=2,
+                    speed_based=False,
+                    relative=False
+                )
+                # self.robot.IKTargetDoComplete()
+                self.robot.WaitDo()
+                self.env.step(100)
+                pz += 0.05
+            elif user_input == 4:
+                self.robot.MoveForward(0.1, 1)
+                self.env.step(100)
+            elif user_input == 5:
+                self.robot.MoveBack(0.1, 1)
+                self.env.step(100)
+            elif user_input == 6:
+                obj = self.env.GetAttr(666666)
+                self.env.step()
+                print(obj.data)
+            else:
+                print("invalid input. choose [0-6]")
+            # end if user input is 2 or contact force > 6N
+            force = self.sponge.GetForce()[0]
+            if user_input == 6:
+                contact = True
+            # check if contact is made
+            if force >= 3:
+                contact = True
+            print(f"Final pos: {self.gripper.data.get('grasp_point_position')}")
+            print(f"shift: {px, py, pz}")
+          
+        expert_data = {
+            "obs": expert_obs,
+            "acts": expert_actions,
+            "goal": goals
+        }  
+        with jsonlines.open('expert_traj_action.jsonl', mode='a') as writer:
+            writer.write(expert_data)
+        print(f"expert data ***{expert_data} *** saved")
+            
+        # 1.    Now, add this probe differential to the desired trajectory
+        # Prevent drilling effect:  
+        py = max(py, -0.14)
+        target = [target[0] + px, target[1] + py, target[2] + pz]
+        start = [start[0] + px, start[1] + py, start[2] + pz]
+        print(f"Final pos: {target}")
+        
+        distance = target[0] - current[0]
+        N_steps = 10
+
+        # 2.    Discretise the trajectory into N steps
+        # PD Controller
+        prev_error = [0, 0, 0]
+        error = [0, 0, 0]
+        dt = 1
+        current = np.array(self.robot.data.get("position"))
+        while abs(self.robot.data.get("position")[0] - target[0]) > 0.01:
+            self.robot.SetImmovable(True)
+            # get progress ratio
+            ratio = abs(self.robot.data.get("position")[0] - current[0]) / abs(target[0] - current[0])
+            # compute desired ee position at this point
+            desired_ee = [current[0] + ratio * (target[0] - current[0]) + 0.3, current[1], current[2] + ratio * (target[2] - current[2]) + 0.3]
+            current_ee = self.robot.data.get("position")
+            error = [0, 0, desired_ee[2] - current_ee[2]]
+            # e_derivative = [(error[0] - prev_error[0]) / dt, (error[1] - prev_error[1]) / dt, (error[2] - prev_error[2]) / dt]
+            # u_t = [(k_p * error[0]) + (k_d * e_derivative[0]), 0, (k_p * error[2]) + (k_d * e_derivative[2])]
+            # new_ee = [current_ee[0] + u_t[0], current_ee[1] + u_t[1], current_ee[2] + u_t[2]]
+            # command the robot to move to this position
+            # new_ee = [desired_ee[0] + error[0], desired_ee[1] + error[1], desired_ee[2] + error[2]]
+            self.robot.IKTargetDoMove(
+                position=[current[0] + 0.15, 0, 0],
+                duration=5,
+                speed_based=False,
+                relative=True
+            )
+            # self.robot.IKTargetDoComplete()
+            self.robot.WaitDo()
+            self.robot.IKTargetDoComplete()
+            self.env.step(200)
+            prev_error = error
+            # self.robot.MoveForward(distance/N_steps, 0.5)
+            
+            
+        
+        # 3.    Implement Admittance Control with PD controller
+
+        
+        
+    def run(self):
+        self.grasp_sponge()
+        self.dip_sponge()
+        self.approach_manikin()
+        self.scrub_manikin()
+        
+        
+      
+
 class Perception:
     
     # Setup a camera to capture objects in the scene
     def __init__(self, env:BathingEnv):
         # Get an instance of the environment
-        # self.ompl_manager = env.InstanceObject(name="OmplManager", attr_type=OmplManagerAttr)
         self.env = env  
         
         # Setup a camera to capture the entire scene
@@ -44,14 +437,13 @@ class Perception:
         self.manikin_camera = env.InstanceObject(name="Camera", id=333333, attr_type=attr.CameraAttr)
         self.manikin_camera.SetTransform(position=[0.0, 2.1, 0.15], rotation=[90, 0, 0])
         
-        self.test_camera = env.InstanceObject(name="Camera", id=444444, attr_type=attr.CameraAttr)
-        self.test_camera2 = env.InstanceObject(name="Camera", id=555555, attr_type=attr.CameraAttr)
-        self.test_camera3 = env.InstanceObject(name="Camera", id=666666, attr_type=attr.CameraAttr)
-        self.test_camera4 = env.InstanceObject(name="Camera", id=777777, attr_type=attr.CameraAttr)
-        self.test_camera5 = env.InstanceObject(name="Camera", id=888888, attr_type=attr.CameraAttr)
-        self.test_camera6 = env.InstanceObject(name="Camera", id=999999, attr_type=attr.CameraAttr)
-        self.test_camera7 = env.InstanceObject(name="Camera", id=101010, attr_type=attr.CameraAttr)
-        self.test_camera8 = env.InstanceObject(name="Camera", id=111111, attr_type=attr.CameraAttr)
+        # 4) camera for LLM obs
+        self.obscamera = self.env.InstanceObject(name="Camera", id=666666, attr_type=attr.CameraAttr)
+        # self.obscamera.SetTransform(position=[-0.1, 2, -0.1], rotation=[60, 45, 0.0])
+        # self.obscamera.SetTransform(position=[-0.4, 1.36, 0.36], rotation=[40, 105, 0])
+        self.obscamera.SetTransform(position=[1, 2.0, 0.0], rotation=[45, 270, 0])
+
+        self.env.step()
         
         self.landmarks_dict = {}
         self.l2w_poses= {}
@@ -61,32 +453,6 @@ class Perception:
         
         # Update landmark information
         self.save_landmarks()
-
-        
-        # # right shoulder - ✅
-        # self.test_camera.SetTransform(position=self.get_landmark("right_shoulder"), rotation=[90, 0, 0])
-        
-        # # right wrist - ✅
-        # self.test_camera2.SetTransform(position=self.get_landmark("right_wrist"), rotation=[90, 0, 0])
-        
-        # # left shoulder - ✅
-        # self.test_camera3.SetTransform(position=self.get_landmark("left_shoulder"), rotation=[90, 0, 0])
-        
-        # # left wrist - ✅
-        # self.test_camera4.SetTransform(position=self.get_landmark("left_wrist"), rotation=[90, 0, 0])
-
-        # # right hip - ✅
-        # self.test_camera5.SetTransform(position=self.get_landmark("right_hip"), rotation=[90, 0, 0])
-        
-        # # left hip - ✅
-        # self.test_camera6.SetTransform(position=self.get_landmark("left_hip"), rotation=[90, 0, 0])
-        
-        # # right ankle - ✅
-        # self.test_camera7.SetTransform(position=self.get_landmark("right_ankle"), rotation=[90, 0, 0])
-        
-        # # left ankle - ✅
-        # self.test_camera8.SetTransform(position=self.get_landmark("left_ankle"), rotation=[90, 0, 0])
-        
     
     # Get sponge 
     def get_sponge(self):
@@ -126,19 +492,19 @@ class Perception:
             # TODO: Placeholder for correct depth
             # print(f"World point before: {world_point}")
             if key == "right_wrist" or key == "left_wrist":
-                world_point[1] = 0.85
+                world_point[1] = 0.93
             elif key == "right_shoulder" or key == "left_shoulder":
-                world_point[1] = 0.85
+                world_point[1] = 0.96
             elif key == "right_hip" or key == "left_hip":
-                world_point[1] = 0.86
+                world_point[1] = 0.96
             elif key == "right_ankle" or key == "left_ankle":
-                world_point[1] = 0.84
+                world_point[1] = 0.95
             # world_point[1] = 0.93
             # print(f"World point after: {world_point}")
             self.l2w_poses[key] = world_point[:3]
             
     def save_landmarks(self):
-        # --------------------------------------------------------------- Scrub manikin perception task --------------------------------------------------------------------
+        # ------------------ Scrub manikin perception -----------------------
         self.env.step(50) 
         # Capture an image of the manikin from the manikin camera
         image = self.manikin_camera.GetRGB(width=512, height=512)
@@ -203,7 +569,7 @@ class Perception:
             print("Error reading landmarks.json:", e)
         return self.landmarks
         
-    
+    # position': [-0.11999999731779099, 1.3600000143051147, 0.30000001192092896], 'rotation': [40.00000762939453, 105.0, -2.2290444121608743e-06]
     
     def generate_trajectory(self):        
         try:
@@ -237,458 +603,31 @@ if __name__ == "__main__":
 
     # Initialise the environment
     env = BathingEnv(graphics=True)  
-    
     # Create a perception object. Detected poses should now be available
     p = Perception(env)
-    
     # env.AlignCamera(123456)  # Scene camera
-    env.AlignCamera(333333) # Mannequin camera
-    
+    # env.AlignCamera(333333) # Mannequin camera
+    env.AlignCamera(666666) # Observation camera
     robot = p.get_robot()
     sponge = p.get_sponge()
     gripper = p.get_gripper()
     
-    # robot.TurnRight(90, 1)
-    # env.step(300)
-    
-    
-    # env.ShowArticulationParameter(robot.id)
-    
-    # joint_positions = robot.data.get("joint_positions")
-    # print(f"Joint positions: {joint_positions}")
-    
-    # ----------------------------------------------- Trajectory Generation ----------------------------------------------------
+    # ------------------- Trajectory Generation -----------------------------
     # Initialise a trajectory generator to get the trajectories
     p.get_landmarks()  #  first load the landmarks
     p.generate_trajectory()  # generate the trajectories
-    # print(f"Landmarks: {p.landmarks}")
-    # print(f"Trajectories: {p.trajectories}")
     
+    task_runner = ReachMannequin(env, robot, gripper, sponge, p.trajectories)
+    task_runner.run()
     
-    # ----------------------------------------------- Trajectory execution -----------------------------------------------------
-    for traj in p.trajectories:
-        pass
-    
-
-    # ----------------------------------------------- Grasp sponge and Dip water tank -------------------------------------------
-    # Raise the gripper to a safe height for easy obstacle avoidance
-    gripper_pos = [robot.data["position"][0], sponge.data.get("position")[1] + 0.3, robot.data["position"][2]]
-    # print(f"Gripper position: {gripper_pos}")
-    robot.IKTargetDoMove(
-        position=gripper_pos,
-        duration=1,
-        speed_based=False,
-    )
-    robot.WaitDo()
-    env.step(50)
-    gripper.GripperOpen()
-    env.step(50)
-    
-    # Move towards sponge
-    robot.MoveForward(0.25, 2)
-    env.step(100)
-    
-    # Turn left
-    robot.TurnLeft(90, 1.5)
-    env.step(200)
-    
-    # Move forward 
-    robot.MoveForward(0.2, 2)
-    env.step(50)
-    
-    # Lower gripper (Grasp sponge)
-    lower_position = [sponge.data.get("position")[0], sponge.data.get("position")[1]+0.03, sponge.data.get("position")[2]]
-    robot.IKTargetDoMove(
-        position=lower_position,  
-        duration=1,
-        speed_based=False,
-    )
-    robot.WaitDo()
-    env.step(50)
-    
-    # Grasp sponge
-    gripper.GripperClose()
-    env.step(50)
-    
-    # Raise Gripper
-    robot.IKTargetDoMove(
-        position=gripper_pos,
-        duration=1,
-        speed_based=False,
-    )
-    robot.WaitDo()
-    env.step(50)
-    
-    # Move backwards
-    robot.MoveBack(0.40, 2)
-    env.step(50)
-    
-    # print(gripper.data)
-    
-    # Lower Gripper to dip sponge
-    robot.IKTargetDoMove(
-        position=lower_position,  
-        duration=1,
-        speed_based=False,
-    )
-    robot.WaitDo()
-    env.step(50)
-    
-    # Raise Gripper
-    reference_gripper_pos = [robot.data["position"][0], sponge.data.get("position")[1] + 0.36, robot.data["position"][2]]
-    robot.IKTargetDoMove(
-        position=reference_gripper_pos,
-        duration=1,
-        speed_based=False,
-    )
-    robot.WaitDo()
-    env.step(50)
-    
-    # Turn to face Manikin
-    robot.TurnLeft(90, 1)
-    env.step(300)
-    
-    # Move towards Manikin
-    robot.MoveForward(0.75, 2)
-    env.step(150)
-    
-    robot.TurnLeft(90, 1)
-    env.step(300)
-    
-    # Move towards Manikin
-    robot.MoveBack(0.20, 2)
-    env.step(150)
-    
-    # Start and target trajectory indices
-    start_indices = [4, 5]    # e.g., left wrist, left shoulder
-    target_indices = [5, 4]   # e.g., left shoulder, left hip
-    
-    # PD Controller - Robot arm
-    k_p = 1.0
-    k_d = 2 * np.sqrt(k_p)
-    
-    # Admittance Controller - Manikin
-    mass = 1.0    # kgm^2
-    stiffness = 100
-    damping = 2 * np.sqrt(stiffness * mass) # Critical damping
-    desired_force = 8.0
-
-    # Loop through each pair of trajectory indices
-    for i in range(len(start_indices)):
-        # Extract start and target coordinates for this trajectory
-        start = p.trajectories[start_indices[i]]
-        x_start, y_start, z_start = start[0], start[1], start[2]
-        
-        target = p.trajectories[target_indices[i]]
-        x_target, y_target, z_target = target[0], target[1], target[2]
-        
-        # Print information for debugging
-        print(f"Start: {start}")
-        print(f"Target: {target}")
-        
-        # Compute total differences from start to finish
-        total_dx = x_target - x_start
-        total_dy = y_target - y_start
-        total_dz = z_target - z_start
-
-        # For moving the base as well
-        base_initial_x = robot.data.get("position")[0]
-        base_x_step = total_dx
-        
-        dx = 0
-        dy = 0
-        dz = 0
-
-        # If target is in front of the robot
-        if base_x_step >= 0:
-            for _ in range(100):
-                prev_error = [0, 0, 0]
-                
-                while abs(robot.data.get("position")[0] - x_target) > 0.01: # TODO: implement counter to prevent infinite loops
-                    
-                    # Read force and compute admittance correction
-                    measured_force = float(sponge.GetForce()[0])
-                    force_error = desired_force - measured_force
-                    displacement_correction = K_a * force_error 
-                    
-                    # Determine the ratio for the current step
-                    ratio = (robot.data.get("position")[0] - x_start)/total_dx
-                    # Compute the desired EE position by linear interpolation
-                    if int(sponge.GetForce()[0]) < 7:
-                        dx += 0
-                        dy += -0.00001
-                        dz -= 0.0005
-                    
-                    desired_ee = [
-                    x_start + (ratio * total_dx) + dx,
-                    y_start + (ratio * total_dy) + dy,
-                    z_start + (ratio * total_dz) + dz
-                    ]
-                    
-                    # Compute the error and derivative of the error
-                    current_pos = np.array(gripper.data.get("grasp_point_position"))
-                    error = np.array([desired_ee[i] - current_pos[i] for i in range(3)])
-                    derivative = np.array([error[i] - prev_error[i] for i in range(3)])  # dt = 1
-                    
-                    # Compute control signal and command robot using the IK target function.
-                    u_t = (k_p * error) + (k_d * derivative)
-                    new_target = current_pos + u_t
-                    robot.IKTargetDoMove(
-                        position=new_target,
-                        duration=10,
-                        speed_based=True,
-                        relative=False
-                    )
-                    robot.IKTargetDoComplete()
-                    robot.WaitDo()
-                    
-                    # Print the ratio, desired EE position and current EE position for debugging
-                    print(f"Ratio {ratio}: ******* Desired EE position: {desired_ee}********* Actual position: {gripper.data.get('grasp_point_position')}")
-                    # Update for next step
-                    prev_error = error[:]
-                    
-                    robot.MoveForward(base_x_step/100, 0.75)
-                    env.step()
-        else:
-            for _ in range(100):
-                prev_error = [0, 0, 0]
-                while abs(robot.data.get("position")[0] - x_target) > 0.01:
-                    # Determine the ratio for the current step
-                    ratio = (robot.data.get("position")[0] - x_start)/total_dx
-                    
-                    # Compute the desired EE position by linear interpolation
-                    desired_ee = [
-                    x_start + (ratio * total_dx),
-                    y_start + (ratio * total_dy),
-                    z_start + (ratio * total_dz)
-                    ]
-                    
-                    # Compute the error and derivative of the error
-                    current_pos = np.array(gripper.data.get("grasp_point_position"))
-                    error = np.array([desired_ee[i] - current_pos[i] for i in range(3)])
-                    derivative = np.array([error[i] - prev_error[i] for i in range(3)])
-                    
-                    # conpute control signal and command the robot using the IK target function
-                    u_t = k_p * error + k_d * derivative
-                    new_target = current_pos + u_t  
-                    robot.IKTargetDoMove(
-                        position=new_target,
-                        duration=10,
-                        speed_based=True,
-                        relative=False
-                    )
-                    robot.IKTargetDoComplete()
-                    robot.WaitDo()
-                    
-                    # Print the ratio, desired EE position and current EE position for debugging
-                    print(f"Ratio {ratio}: ******* Desired EE position: {desired_ee}********* Actual position: {gripper.data.get('grasp_point_position')}")
-                    # Update for next step
-                    prev_error = error[:]
-                    
-                    robot.MoveBack(-base_x_step/100, 0.75)
-                    env.step()
-       
     # Do not close window
     env.WaitLoadDone()
-    
-    
-# # Define admittance control parameters and initial states
-# M = 1.0      # Virtual mass [kg]
-# B = 2 * np.sqrt(K*M)     # Damping coefficient [N·s/m]
-# K = 2000.0    # Stiffness [N/m]
-# dt = 1    # Time step [s]
-
-# adm_velocity = 0.0
-# adm_displacement = 0.0
-
-# F_desired = 6N  # Desired contact force (in Newtons)
+  
+  
+        
+        
 
 
-# ratio = step / (num_steps + 1) TODO: get ratio
-    
-# # Calculate the nominal EE position by interpolating between start and target
-# desired_ee_nominal = [
-#     x_start + ratio * (x_target - x_start),
-#     y_start + ratio * (y_target - y_start),
-#     z_start + ratio * (z_target - z_start)
-# ]
-    
-# Get the current force measurement 
-# measured_force = sponge.GetForce()
-    
-# # Compute force error and update admittance control dynamics
-# force_error = F_desired - measured_force
-# adm_acceleration = (force_error - (B * adm_velocity) - (K * adm_displacement) ) / M 
-# adm_velocity += dt * adm_acceleration
-# adm_displacement += dt * adm_velocity
-    
-# # Compute final desired EE position with admittance correction
-#  desired_ee = desired_ee_nominal.copy()
-#  desired_ee[2] += adm_displacement  # Applying correction along z-axis (if applicable)
-    
-# # Output for debugging
-#  print(f"Ratio {ratio}: ***** Nominal EE: {desired_ee_nominal} ***** Correction: {adm_displacement} ***** Updated EE: {desired_ee}")
-    
-# # Command the robot using the IK target function with the modified command
-# robot.IKTargetDoMove(
-#     position=desired_ee,
-#     duration=10,
-#     speed_based=True,
-#     relative=False
-# 
-
-# env.step()
-
-
-# self.data[‘result_joint_position’]
-    
-    
-    
-    
-    
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-      
-    # # # -------------------------------------- OMPL Integration -----------------------------
-    # # robot.EnabledNativeIK(False) # native inverse kinematics (IK) is disabled
-    # # env.step()
-    
-    # # # p.ompl_manager = env.InstanceObject(name="OmplManager", attr_type=_attr.OmplManagerAttr)
-    # # p.ompl_manager.modify_robot(221582)  # o that it can plan motions for that robot.
-    # # env.step()
-    
-    # # planner = rfu_ompl.RFUOMPL(p.ompl_manager, time_unit=5)
-
-    # # print("+++++++++++++++ OMPL Working +++++++++++++++")
-    
-    # # start_state_cs = [
-    # #     -0.020131396129727364,
-    # #     2.3013671402469313,
-    # #     -0.2289543200973192
-    # # ]
-    # # robot.GetIKTargetJointPosition(start_state_cs, iterate=100)
-    # # env.step()
-    # # start_state_js =  robot.data['result_joint_position']
-    # # print(f"++++++ {start_state_js} +++++++ ")
-    
-    # # target_state_cs = [
-    # #     0.4879406988620758,
-    # #     2.165602606022067,
-    # #     0.018232385705884813
-    # # ]
-    # # robot.GetIKTargetJointPosition(target_state_cs, iterate=100)
-    # # env.step()
-    # # target_state_js =  robot.data["result_joint_position"]
-    # # print(f"++++++ {target_state_js} +++++++ ")
-
-    # # # begin
-    # # p.ompl_manager.set_state(start_state_js)
-    # # env.step(50)
-
-    # # # target
-    # # p.ompl_manager.set_state(target_state_js)
-    # # env.step(50)
-
-    # # # return
-    # # p.ompl_manager.set_state(start_state_js)
-    # # env.step(50)
-
-    # # # The simulation’s time step is set to a very small value (0.001) and then stepped to register this change.
-    # # env.SetTimeStep(0.001)
-    # # env.step()
-
-    # # # is_sol is a boolean flag indicating whether a valid solution (path) was found.
-    # # # path is the sequence of states (or waypoints) that the planner computed.
-    # # is_sol, path = planner.plan_start_goal(target_state_js, target_state_js)
-
-    # # # The code prints the target state and the last state in the computed path. This is likely to verify that the planned path ends at the desired target configuration.
-    # # print(target_state_js)
-    # # print(path[-1])
-
-    # # # The time step is increased back to 0.02 for executing the path at a normal simulation pace.
-    # # env.SetTimeStep(0.02)
-    # # env.step()
-
-
-    # # # if a valid solution was found (is_sol is True), it continuously executes the planned path.
-    # # while True:
-    # #     if is_sol:
-    # #         planner.execute(path)
-    
+# class Prober:    
+#     def __init__(self, env:BathingEnv):
+#         pass

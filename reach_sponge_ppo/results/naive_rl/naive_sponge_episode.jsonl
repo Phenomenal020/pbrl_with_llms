@@ -1,0 +1,11 @@
+// {"done": true, "truncated": false, "n_collisions": 1, "returns": -10.6, "n_steps": 6, "num_episodes": 1, "num_episodes_steps": 6}
+// {"done": false, "truncated": true, "n_collisions": 0, "returns": -10.1, "n_steps": 7, "num_episodes": 3, "num_episodes_steps": 1}
+// {"done": true, "truncated": false, "n_collisions": 1, "returns": -10.9, "n_steps": 16, "num_episodes": 5, "num_episodes_steps": 9}
+// {"done": true, "truncated": false, "n_collisions": 1, "returns": -10.7, "n_steps": 23, "num_episodes": 7, "num_episodes_steps": 7}
+// {"done": true, "truncated": false, "n_collisions": 2, "returns": -14.799999999999999, "n_steps": 71, "num_episodes": 9, "num_episodes_steps": 48}
+// {"done": true, "truncated": false, "n_collisions": 1, "returns": -16.499999999999993, "n_steps": 136, "num_episodes": 11, "num_episodes_steps": 65}
+// {"done": false, "truncated": true, "n_collisions": 0, "returns": -10.1, "n_steps": 137, "num_episodes": 13, "num_episodes_steps": 1}
+// {"done": true, "truncated": false, "n_collisions": 1, "returns": -10.5, "n_steps": 142, "num_episodes": 15, "num_episodes_steps": 5}
+// {"done": true, "truncated": false, "n_collisions": 1, "returns": -10.299999999999999, "n_steps": 145, "num_episodes": 17, "num_episodes_steps": 3}
+// {"done": true, "truncated": false, "n_collisions": 2, "returns": -13.600000000000001, "n_steps": 181, "num_episodes": 19, "num_episodes_steps": 36}
+

@@ -44,9 +44,9 @@ class GenTrajectory:
 
 
 # # Example usage
-# if __name__ == "__main__":
-#     traj_generator = GenTrajectory()
-#     trajectories = traj_generator.generate_trajectory()
-#     print("Generated Trajectories:")
-#     for key, traj in trajectories.items():
-#         print(f"{key}: {traj}")
+if __name__ == "__main__":
+    traj_generator = GenTrajectory()
+    trajectories = traj_generator.generate_trajectory()
+    print("Generated Trajectories:")
+    for key, traj in trajectories.items():
+        print(f"{key}: {traj}")
